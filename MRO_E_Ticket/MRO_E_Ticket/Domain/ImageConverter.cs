@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using MRO_E_Ticket.Enum;
 namespace MRO_E_Ticket.Domain
 {
     public class ImageConverter
@@ -13,8 +13,8 @@ namespace MRO_E_Ticket.Domain
         private readonly double x2 = 0.587;
         private readonly double x3 = 0.114;
 
-        private readonly byte BinColorBlack = 255;
-        private readonly byte BinColorWhite = 0;
+        private readonly byte BinColorWhite = 255;
+        private readonly byte BinColorBlack = 0;
 
         private int sizeHeigh = 0;
         private int sizeWidth = 0;
@@ -38,7 +38,7 @@ namespace MRO_E_Ticket.Domain
                         bitmap.GetPixel(i, j).B);
                 }
             }
-            return CreateBitmap(bufferArray);
+            return CreateBitmapGray(bufferArray);
         }
 
         public int[,] TransferToGrayscaleGetArray(Bitmap bitmap)
@@ -102,11 +102,11 @@ namespace MRO_E_Ticket.Domain
             byte resultColor = 0;
             if (R <= 120 || G <= 120 || B <= 120)
             {
-                resultColor = BinColorWhite;
+                resultColor = (byte)BinarizationColorPixel.Black;
             }
             else
             {
-                resultColor = BinColorBlack;
+                resultColor = (byte)BinarizationColorPixel.White;
             }
             return resultColor;
         }
@@ -121,7 +121,22 @@ namespace MRO_E_Ticket.Domain
                 for (int j = 0; j < (sizeHeigh); j++)
                 {
                     ScalePixel = arrayImage[i, j];
-                    halfBitmap.SetPixel(i, j, Color.FromArgb(ScalePixel, ScalePixel, ScalePixel, ScalePixel));
+                    halfBitmap.SetPixel(i, j, Color.FromArgb(ScalePixel, ScalePixel, ScalePixel));
+                }
+            }
+            return halfBitmap;
+        }
+
+        public Bitmap CreateBitmapGray(int[,] arrayImage)
+        {
+            Bitmap halfBitmap = new Bitmap(sizeWidth, sizeHeigh);
+            int ScalePixel = 0;
+            for (int i = 0; i < (sizeWidth); i++)
+            {
+                for (int j = 0; j < (sizeHeigh); j++)
+                {
+                    ScalePixel = arrayImage[i, j];
+                    halfBitmap.SetPixel(i, j, Color.FromArgb(ScalePixel,ScalePixel, ScalePixel, ScalePixel));
                 }
             }
             return halfBitmap;

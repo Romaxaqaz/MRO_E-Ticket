@@ -64,6 +64,7 @@
     <Compile Include="Histogramm.Designer.cs">
       <DependentUpon>Histogramm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\ImageCollection.cs" />
     <Compile Include="Model\ParametersForGistogram.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -12,6 +12,12 @@ namespace MRO_E_Ticket.Model
         private int startPositionPixel = 0;
         private int endPositionPixel = 0;
         private int witdhPixel = 0;
+
+        public int TheТumberOfPixels { get { return theТumberOfPixels; } set { theТumberOfPixels = value; } }
+        public int StartPositionPixel { get { return startPositionPixel; } set { startPositionPixel = value; } }
+        public int EndPositionPixel { get { return endPositionPixel; } set { endPositionPixel = value; } }
+        public int WidthPixels { get { return endPositionPixel - startPositionPixel; } }
+
         public ParametersForGistogram(int numberPixels)
         {
             theТumberOfPixels = numberPixels;
@@ -23,9 +29,5 @@ namespace MRO_E_Ticket.Model
             startPositionPixel = startP;
             endPositionPixel = endP;
         }
-        public int TheТumberOfPixels { get { return theТumberOfPixels; } set { theТumberOfPixels = value; } }
-        public int StartPositionPixel { get { return startPositionPixel; } set { startPositionPixel = value; } }
-        public int EndPositionPixel { get { return endPositionPixel; } set { endPositionPixel = value; } }
-        public int WidthPixels { get { return endPositionPixel - startPositionPixel; } }
     }
 }

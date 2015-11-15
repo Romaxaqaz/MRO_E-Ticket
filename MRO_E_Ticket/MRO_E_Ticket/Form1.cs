@@ -17,48 +17,52 @@ namespace MRO_E_Ticket
     public partial class Form1 : Form
     {
         private Domain.ImageConverter imageConverter = new Domain.ImageConverter();
+        private List<ParametersForGistogram> mainList = new List<ParametersForGistogram>();
+        private List<ParametersForGistogram> DividedImageList;
+        private TransformationForTheHistogram trans = new TransformationForTheHistogram();
+        #region Image
+        private Bitmap originalImage;
+        private Bitmap grayBitmap;
+        private Bitmap binary;
+        private int[,] DividedImage;
+        #endregion
         public Form1()
         {
             InitializeComponent();
         }
-        private List<ParametersForGistogram> mainList = new List<ParametersForGistogram>();
-        Bitmap binary;
-        TransformationForTheHistogram trans = new TransformationForTheHistogram();
+        //open menu image
         private void OpenImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var result = openFileDialog1.ShowDialog();
             if (result == DialogResult.OK)
             {
                 string filePath = openFileDialog1.FileName;
-                Bitmap bitmap = new Bitmap(filePath);
-                OriginalPictureBox.Image = bitmap;
-                Bitmap grayBitmap = imageConverter.TransferToGrayscaleGetBitmap(bitmap);
-                GrayScalePictureBox.Image = grayBitmap;
-                Bitmap binarizationImage = imageConverter.BinarizationThresholdMethodGetBitmap(grayBitmap);
-                BinarizationPictureBox.Image = binarizationImage;
-                binary = binarizationImage;
-                var resultGisto = trans.Parameters(imageConverter.BinarizationThresholdMethodGetArray(grayBitmap));
-                mainList = resultGisto;
-                Histogramm form2 = new Histogramm();
-                form2.setData(resultGisto);
-                form2.Show();
+                originalImage = new Bitmap(filePath);
+                OriginalPictureBox.Image = originalImage;
             }
         }
-        Segmentation segment = new Segmentation();
-        private void button1_Click(object sender, EventArgs e)
+        //open image method
+        private Bitmap OpenImage()
         {
-            var array = imageConverter.BinarizationThresholdMethodGetArray(binary);
-            SegmentationPictureBox.Image = imageConverter.CreateBitmap(segment.Fullparameters(mainList, array));
-        }
-
-        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Images|*.png;*.bmp;*.jpg";
-            ImageFormat format = ImageFormat.Png;
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            Bitmap returnBitmap = null;
+            var result = openFileDialog1.ShowDialog();
+            if (result == DialogResult.OK)
             {
-                string ext = System.IO.Path.GetExtension(sfd.FileName);
+                string filePath = openFileDialog1.FileName;
+                originalImage = new Bitmap(filePath);
+                returnBitmap = originalImage;
+            }
+            return returnBitmap;
+        }
+        #region TabControl
+        private void SaveImageInPictureBox(PictureBox picrure)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Images|*.png;*.bmp;*.jpg";
+            ImageFormat format = ImageFormat.Bmp;
+            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string ext = System.IO.Path.GetExtension(saveFileDialog.FileName);
                 switch (ext)
                 {
                     case ".jpg":
@@ -68,7 +72,178 @@ namespace MRO_E_Ticket
                         format = ImageFormat.Bmp;
                         break;
                 }
-                SegmentationPictureBox.Image.Save(sfd.FileName, format);
+                picrure.Image.Save(saveFileDialog.FileName, format);
+            }
+        }
+        //transfer to grayscale event
+        private void TransferToGrayscaleTabPage_Click(object sender, EventArgs e)
+        {
+            grayBitmap = imageConverter.TransferToGrayscaleGetBitmap(originalImage);
+            GrayScalePictureBox.Image = grayBitmap;
+        }
+        //binarization event
+        private void BinarizationTabPage_Click(object sender, EventArgs e)
+        {
+            Bitmap binarizationImage = imageConverter.BinarizationThresholdMethodGetBitmap(grayBitmap);
+            BinarizationPictureBox.Image = binarizationImage;
+            binary = binarizationImage;
+        }
+        //tabcontrol indexChange
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TabControl page = sender as TabControl;
+            switch (page.SelectedIndex)
+            {
+                case 1:
+                    #region Transfer to grayscale
+                    try
+                    {
+                        imageConverter.Progress += ImageConverter_Progress;
+                        if (originalImage != null)
+                        {
+                            grayBitmap = imageConverter.TransferToGrayscaleGetBitmap(originalImage);
+                            GrayScalePictureBox.Image = grayBitmap;
+                        }
+                        else { throw new Exception("choose a grayscale image:"); }
+                    }
+                    catch (Exception ex)
+                    {
+                        DialogResult result1 = MessageBox.Show(ex.Message.ToString(),
+                                                 "no original image selected",
+                                                    MessageBoxButtons.YesNoCancel,
+                                                    MessageBoxIcon.Question,
+                                                    MessageBoxDefaultButton.Button2);
+                        if (result1 == DialogResult.Yes)
+                        {
+
+                            originalImage = OpenImage();
+                            OriginalPictureBox.Image = originalImage;
+                            page.SelectedIndex = 0;
+                        }
+                    }
+                    break;
+                #endregion
+                case 2:
+                    #region Binarization image
+                    try
+                    {
+                        if (grayBitmap != null)
+                        {
+                            imageConverter.Progress += ImageConverter_Progress;
+                            Bitmap binarizationImage = imageConverter.BinarizationThresholdMethodGetBitmap(grayBitmap);
+                            BinarizationPictureBox.Image = binarizationImage;
+                            binary = binarizationImage;
+                            var resultGisto = trans.Parameters(imageConverter.BinarizationThresholdMethodGetArray(grayBitmap));
+                            mainList = resultGisto;
+                        }
+                        else if (binary == null)
+                        {
+                            binary = OpenImage();
+                            BinarizationPictureBox.Image = binary;
+                            var resultGisto = trans.Parameters(imageConverter.BinarizationThresholdMethodGetArray(binary));
+                            mainList = resultGisto;
+                        }
+                        else { throw new Exception("choose a binarization image:"); }
+                    }
+                    catch (Exception ex)
+                    {
+                        DialogResult result1 = MessageBox.Show(ex.Message.ToString(),
+                                                 "no grayscale image selected",
+                                                    MessageBoxButtons.YesNoCancel,
+                                                    MessageBoxIcon.Question,
+                                                    MessageBoxDefaultButton.Button2);
+                        if (result1 == DialogResult.Yes)
+                        {
+
+                            binary = OpenImage();
+                            BinarizationPictureBox.Image = binary;
+                            page.SelectedIndex = 1;
+                        }
+                    }
+
+                    break;
+                #endregion
+                case 3:
+                    #region Segmentation
+                    imageConverter.Progress += ImageConverter_Progress;
+                    var arrayImage = imageConverter.BinarizationThresholdMethodGetArray(binary);
+                    Segmentation segment = new Segmentation(arrayImage, mainList);
+                    // remove up and down element image and
+                    SegmentationPictureBox.Image = imageConverter.CreateBitmap(segment.RemoveUpAndDownElementImage(mainList, arrayImage));
+                    //removing unnecessary lines segment.SelectionOfAreas()
+                    var segmentImageInfo = imageConverter.CreateBitmap(segment.SelectionOfAreas());
+
+                    //get array new small image
+                    var arrayNewImage = imageConverter.BinarizationThresholdMethodGetArray(segmentImageInfo);
+                    //get list params histogramm
+                    var paramsForHistogrammNewImage = trans.HorizontalImageGetParameters(arrayNewImage);
+                    var miniArray = segment.SelectionOfAreasInHorizontalImage(paramsForHistogrammNewImage, arrayNewImage);
+                    var finishImageRecognition = imageConverter.CreateBitmap(miniArray);
+                    SegmentationPictureBox.Image = finishImageRecognition;
+                    //var afterBin = imageConverter.BinarizationThresholdMethodGetArray(seg);
+                    //var Gisto2 = trans.HorizontalImageGetParameters(afterBin);
+                    DividedImage = miniArray;
+                    DividedImageList = paramsForHistogrammNewImage;
+                    ImageRecognitionPictureBox1.Image = finishImageRecognition;
+                    #endregion
+                    break;
+
+            }
+        }
+        #endregion
+        //progress event
+        private void ImageConverter_Progress(int value, int maxValue, string processName)
+        {
+            ProgressName.Text = processName;
+            progressBar1.Maximum = maxValue;
+            progressBar1.Value = value;
+        }
+        //save grayScale Image
+        private void GrayScaleLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            SaveImageInPictureBox(GrayScalePictureBox);
+        }
+        //save binarization Image
+        private void BinarizationImagelinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            SaveImageInPictureBox(BinarizationPictureBox);
+        }
+        //show histogramm
+        private void HistogrammlinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Histogramm histgramm = new Histogramm();
+            histgramm.setData(mainList);
+            histgramm.Show();
+        }
+        //savre recondition Image
+        private void SaveReconditionImageLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            SaveImageInPictureBox(ImageRecognitionPictureBox1);
+        }
+        //save collection image
+        private void DividedIntoImageButton_Click(object sender, EventArgs e)
+        {
+            Segmentation segment = new Segmentation(null, null);
+            var collectionImage = segment.GetCollectionofImage(DividedImageList, DividedImage);
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Images|*.png;*.bmp;*.jpg";
+            ImageFormat format = ImageFormat.Bmp;
+            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string ext = System.IO.Path.GetExtension(saveFileDialog.FileName);
+                switch (ext)
+                {
+                    case ".jpg":
+                        format = ImageFormat.Jpeg;
+                        break;
+                    case ".bmp":
+                        format = ImageFormat.Bmp;
+                        break;
+                }
+            }
+            foreach (var item in collectionImage)
+            {
+                item.bitmap.Save(item.Name + ".bmp", format);
             }
         }
     }

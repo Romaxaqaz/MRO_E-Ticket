@@ -12,10 +12,10 @@ namespace MRO_E_Ticket.Model
         public string Name { get; set; }
         public Bitmap bitmap;
 
-        public ImageCollection(string name, Bitmap bit)
+        public ImageCollection(string name, Bitmap bitmap)
         {
             Name = name;
-            bitmap = bit;
+            this.bitmap = bitmap;
         }
     }
 }

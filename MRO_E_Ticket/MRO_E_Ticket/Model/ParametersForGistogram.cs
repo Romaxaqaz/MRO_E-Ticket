@@ -11,7 +11,6 @@ namespace MRO_E_Ticket.Model
         private int theТumberOfPixels = 0;
         private int startPositionPixel = 0;
         private int endPositionPixel = 0;
-        private int witdhPixel = 0;
 
         public int TheТumberOfPixels { get { return theТumberOfPixels; } set { theТumberOfPixels = value; } }
         public int StartPositionPixel { get { return startPositionPixel; } set { startPositionPixel = value; } }

@@ -54,6 +54,11 @@
             this.SaveReconditionImageLinkLabel = new System.Windows.Forms.LinkLabel();
             this.DividedIntoImageButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.RotationTextBox = new System.Windows.Forms.TextBox();
+            this.ExpansionCheckBox = new System.Windows.Forms.CheckBox();
+            this.ErosionCheckBox = new System.Windows.Forms.CheckBox();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.OriginalPictureBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -103,7 +108,7 @@
             // сохранитьToolStripMenuItem
             // 
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
             // 
             // бинаризацияToolStripMenuItem
             // 
@@ -119,13 +124,13 @@
             this.пороговаяToolStripMenuItem.Checked = true;
             this.пороговаяToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.пороговаяToolStripMenuItem.Name = "пороговаяToolStripMenuItem";
-            this.пороговаяToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.пороговаяToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.пороговаяToolStripMenuItem.Text = "threshold";
             // 
             // метод40ToolStripMenuItem
             // 
             this.метод40ToolStripMenuItem.Name = "метод40ToolStripMenuItem";
-            this.метод40ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.метод40ToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.метод40ToolStripMenuItem.Text = "method 40%";
             // 
             // tabControl1
@@ -321,11 +326,63 @@
             this.label1.TabIndex = 12;
             this.label1.Text = "Panteleev R.V.";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(503, 156);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 13;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // RotationTextBox
+            // 
+            this.RotationTextBox.Location = new System.Drawing.Point(397, 159);
+            this.RotationTextBox.Name = "RotationTextBox";
+            this.RotationTextBox.Size = new System.Drawing.Size(100, 20);
+            this.RotationTextBox.TabIndex = 14;
+            // 
+            // ExpansionCheckBox
+            // 
+            this.ExpansionCheckBox.AutoSize = true;
+            this.ExpansionCheckBox.Location = new System.Drawing.Point(397, 216);
+            this.ExpansionCheckBox.Name = "ExpansionCheckBox";
+            this.ExpansionCheckBox.Size = new System.Drawing.Size(75, 17);
+            this.ExpansionCheckBox.TabIndex = 15;
+            this.ExpansionCheckBox.Text = "Expansion";
+            this.ExpansionCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // ErosionCheckBox
+            // 
+            this.ErosionCheckBox.AutoSize = true;
+            this.ErosionCheckBox.Location = new System.Drawing.Point(397, 239);
+            this.ErosionCheckBox.Name = "ErosionCheckBox";
+            this.ErosionCheckBox.Size = new System.Drawing.Size(61, 17);
+            this.ErosionCheckBox.TabIndex = 16;
+            this.ErosionCheckBox.Text = "Erosion";
+            this.ErosionCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(483, 216);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 40);
+            this.button2.TabIndex = 17;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(756, 615);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.ErosionCheckBox);
+            this.Controls.Add(this.ExpansionCheckBox);
+            this.Controls.Add(this.RotationTextBox);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.DividedIntoImageButton);
             this.Controls.Add(this.SaveReconditionImageLinkLabel);
@@ -384,6 +441,11 @@
         private System.Windows.Forms.LinkLabel SaveReconditionImageLinkLabel;
         private System.Windows.Forms.Button DividedIntoImageButton;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox RotationTextBox;
+        private System.Windows.Forms.CheckBox ExpansionCheckBox;
+        private System.Windows.Forms.CheckBox ErosionCheckBox;
+        private System.Windows.Forms.Button button2;
     }
 }
 

@@ -20,6 +20,9 @@ namespace MRO_E_Ticket
         private List<ParametersForGistogram> mainList = new List<ParametersForGistogram>();
         private List<ParametersForGistogram> DividedImageList;
         private TransformationForTheHistogram trans = new TransformationForTheHistogram();
+        private List<ImageCollection> numberImageCollection = new List<ImageCollection>();
+        //rotate image class--------
+        private RotateBitmapImage rotateBitmapImage = new RotateBitmapImage();
         #region Image
         private Bitmap originalImage;
         private Bitmap grayBitmap;
@@ -183,7 +186,8 @@ namespace MRO_E_Ticket
                     //var afterBin = imageConverter.BinarizationThresholdMethodGetArray(seg);
                     //var Gisto2 = trans.HorizontalImageGetParameters(afterBin);
                     DividedImage = miniArray;
-                    DividedImageList = paramsForHistogrammNewImage;
+                    //get params miniImage fo segmentations numbers
+                    DividedImageList = trans.HorizontalImageGetParameters(miniArray);
                     ImageRecognitionPictureBox1.Image = finishImageRecognition;
                     #endregion
                     break;
@@ -224,7 +228,7 @@ namespace MRO_E_Ticket
         private void DividedIntoImageButton_Click(object sender, EventArgs e)
         {
             Segmentation segment = new Segmentation(null, null);
-            var collectionImage = segment.GetCollectionofImage(DividedImageList, DividedImage);
+            numberImageCollection = segment.GetCollectionofImage(DividedImageList, DividedImage);
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Images|*.png;*.bmp;*.jpg";
             ImageFormat format = ImageFormat.Bmp;
@@ -241,9 +245,54 @@ namespace MRO_E_Ticket
                         break;
                 }
             }
-            foreach (var item in collectionImage)
+            foreach (var item in numberImageCollection)
             {
                 item.bitmap.Save(item.Name + ".bmp", format);
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string stringVal = RotationTextBox.Text.Replace(".", ",");
+            float angle = (float)Convert.ToDouble(stringVal);
+            Bitmap map = rotateBitmapImage.RotateBitmap(binary, angle);
+            binary = map;
+
+            BinarizationPictureBox.Image = null;
+            BinarizationPictureBox.Image = imageConverter.BinarizationThresholdMethodGetBitmap(binary);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Images|*.png;*.bmp;*.jpg";
+            ImageFormat format = ImageFormat.Bmp;
+            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string ext = System.IO.Path.GetExtension(saveFileDialog.FileName);
+                switch (ext)
+                {
+                    case ".jpg":
+                        format = ImageFormat.Jpeg;
+                        break;
+                    case ".bmp":
+                        format = ImageFormat.Bmp;
+                        break;
+                }
+            }
+            if (ExpansionCheckBox.Checked)
+            {
+                foreach (var item in ExpansionAndErosion.GetResultImageAfterExpansion(numberImageCollection, "Ex"))
+                {
+                    item.bitmap.Save(item.Name + ".bmp", format);
+                }
+            }
+            if (ErosionCheckBox.Checked)
+            {
+                foreach (var item in ExpansionAndErosion.GetResultImageAfterErosion(numberImageCollection, "Er"))
+                {
+                    item.bitmap.Save(item.Name + ".bmp", format);
+                }
             }
         }
     }

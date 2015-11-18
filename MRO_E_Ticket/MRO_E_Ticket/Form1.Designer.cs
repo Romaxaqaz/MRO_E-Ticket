@@ -59,6 +59,7 @@
             this.ExpansionCheckBox = new System.Windows.Forms.CheckBox();
             this.ErosionCheckBox = new System.Windows.Forms.CheckBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.perceptronToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.OriginalPictureBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -89,7 +90,8 @@
             this.menuStrip1.BackColor = System.Drawing.SystemColors.ControlDark;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.OpenImageToolStripMenuItem,
-            this.бинаризацияToolStripMenuItem});
+            this.бинаризацияToolStripMenuItem,
+            this.perceptronToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(756, 24);
@@ -373,6 +375,13 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // perceptronToolStripMenuItem
+            // 
+            this.perceptronToolStripMenuItem.Name = "perceptronToolStripMenuItem";
+            this.perceptronToolStripMenuItem.Size = new System.Drawing.Size(77, 20);
+            this.perceptronToolStripMenuItem.Text = "Perceptron";
+            this.perceptronToolStripMenuItem.Click += new System.EventHandler(this.perceptronToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -446,6 +455,7 @@
         private System.Windows.Forms.CheckBox ExpansionCheckBox;
         private System.Windows.Forms.CheckBox ErosionCheckBox;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.ToolStripMenuItem perceptronToolStripMenuItem;
     }
 }
 

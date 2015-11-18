@@ -11,7 +11,7 @@ using MRO_E_Ticket.Domain;
 using MRO_E_Ticket.Model;
 using ZedGraph;
 using System.Drawing.Imaging;
-
+using PerceptronLib;
 namespace MRO_E_Ticket
 {
     public partial class Form1 : Form
@@ -294,6 +294,12 @@ namespace MRO_E_Ticket
                     item.bitmap.Save(item.Name + ".bmp", format);
                 }
             }
+        }
+
+        private void perceptronToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PerceptronViewer view = new PerceptronViewer();
+            view.Show();
         }
     }
 }

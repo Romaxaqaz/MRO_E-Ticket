@@ -5,6 +5,10 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MRO_E_Ticket", "MRO_E_Ticket\MRO_E_Ticket.csproj", "{413DF0F5-730C-45B1-B2BB-CA89B003A6C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerceptronLib", "ClassLibrary1\PerceptronLib.csproj", "{8EF78A63-62DB-402E-B03F-21612EE71657}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlGeneratorsLib", "HtmlGenerators\HtmlGeneratorsLib.csproj", "{A19AF5E7-FB92-4A98-8D10-EC5250298F8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{413DF0F5-730C-45B1-B2BB-CA89B003A6C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{413DF0F5-730C-45B1-B2BB-CA89B003A6C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{413DF0F5-730C-45B1-B2BB-CA89B003A6C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EF78A63-62DB-402E-B03F-21612EE71657}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EF78A63-62DB-402E-B03F-21612EE71657}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EF78A63-62DB-402E-B03F-21612EE71657}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EF78A63-62DB-402E-B03F-21612EE71657}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A19AF5E7-FB92-4A98-8D10-EC5250298F8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A19AF5E7-FB92-4A98-8D10-EC5250298F8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A19AF5E7-FB92-4A98-8D10-EC5250298F8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A19AF5E7-FB92-4A98-8D10-EC5250298F8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

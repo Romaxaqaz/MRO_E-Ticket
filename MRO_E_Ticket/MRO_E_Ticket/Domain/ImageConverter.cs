@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MRO_E_Ticket.Enum;
+using MRO_E_Ticket.BitmapLib;
 namespace MRO_E_Ticket.Domain
 {
     public class ImageConverter
@@ -22,7 +23,7 @@ namespace MRO_E_Ticket.Domain
         private int binarizationThreshold = 120;
 
         public int BinarizationThreshold { get { return binarizationThreshold; } set { binarizationThreshold = value; } }
-       
+
         #region EventSetting
         public delegate void dlgProgress(int value, int maxValue, string processName);
         public event dlgProgress Progress;
@@ -32,6 +33,8 @@ namespace MRO_E_Ticket.Domain
         //tranfer to grayscale and return bitmap
         public Bitmap TransferToGrayscaleGetBitmap(Bitmap bitmap)
         {
+            FastBitmap fastBitmap = new FastBitmap(bitmap);
+            fastBitmap.LockImage();
             int[,] ArrayForImage = new int[bitmap.Width, bitmap.Height];
             sizeWidth = bitmap.Width;
             sizeHeigh = bitmap.Height;
@@ -40,10 +43,11 @@ namespace MRO_E_Ticket.Domain
             {
                 for (int j = 0; j < (bitmap.Height); j++)
                 {
+                    Color oldPixel = fastBitmap.GetPixel(i, j);
                     ArrayForImage[i, j] = GrayscalePixel(
-                        bitmap.GetPixel(i, j).R,
-                        bitmap.GetPixel(i, j).G,
-                        bitmap.GetPixel(i, j).B);
+                        oldPixel.R,
+                        oldPixel.G,
+                        oldPixel.B);
                 }
                 progressValue++;
                 if (Progress != null)
@@ -51,11 +55,14 @@ namespace MRO_E_Ticket.Domain
                     Progress(progressValue, bitmap.Width, TransferToGrayscaleProvess);
                 }
             }
+            fastBitmap.UnlockImage();
             return CreateBitmapGray(ArrayForImage);
         }
         //tranfer to grayscale and return array
         public int[,] TransferToGrayscaleGetArray(Bitmap bitmap)
         {
+            FastBitmap fastBitmap = new FastBitmap(bitmap);
+            fastBitmap.LockImage();
             int[,] ArrayForImage = new int[bitmap.Width, bitmap.Height];
             sizeWidth = bitmap.Width;
             sizeHeigh = bitmap.Height;
@@ -64,11 +71,12 @@ namespace MRO_E_Ticket.Domain
                 for (int j = 0; j < (bitmap.Height); j++)
                 {
                     ArrayForImage[i, j] = GrayscalePixel(
-                        bitmap.GetPixel(i, j).R,
-                        bitmap.GetPixel(i, j).G,
-                        bitmap.GetPixel(i, j).B);
+                       fastBitmap.GetPixel(i, j).R,
+                        fastBitmap.GetPixel(i, j).G,
+                        fastBitmap.GetPixel(i, j).B);
                 }
             }
+            fastBitmap.UnlockImage();
             return ArrayForImage;
         }
 
@@ -83,26 +91,31 @@ namespace MRO_E_Ticket.Domain
         //binarization and return array
         public int[,] BinarizationThresholdMethodGetArray(Bitmap bitmap)
         {
+            FastBitmap fastBitmap = new FastBitmap(bitmap);
+            fastBitmap.LockImage();
             int[,] ArrayForBinarizationImage = new int[bitmap.Width, bitmap.Height];
             for (int i = 0; i < (bitmap.Width); i++)
             {
                 for (int j = 0; j < (bitmap.Height); j++)
                 {
-                    ArrayForBinarizationImage[i, j] = ResultPixelColorAfterBinarization(bitmap.GetPixel(i, j).R);
+                    ArrayForBinarizationImage[i, j] = ResultPixelColorAfterBinarization(fastBitmap.GetPixel(i, j).R);
                 }
             }
+            fastBitmap.UnlockImage();
             return ArrayForBinarizationImage;
         }
         //binarization and return Bitmap
         public Bitmap BinarizationThresholdMethodGetBitmap(Bitmap bitmap)
         {
+            FastBitmap fastBitmap = new FastBitmap(bitmap);
+            fastBitmap.LockImage();
             int[,] ArrayForBinarizationImage = new int[bitmap.Width, bitmap.Height];
             int progressValue = 0;
             for (int i = 0; i < (bitmap.Width); i++)
             {
                 for (int j = 0; j < (bitmap.Height); j++)
                 {
-                    ArrayForBinarizationImage[i, j] = ResultPixelColorAfterBinarization(bitmap.GetPixel(i, j).R);
+                    ArrayForBinarizationImage[i, j] = ResultPixelColorAfterBinarization(fastBitmap.GetPixel(i, j).R);
                 }
                 progressValue++;
                 if (Progress != null)
@@ -110,6 +123,7 @@ namespace MRO_E_Ticket.Domain
                     Progress(progressValue, bitmap.Width, BinarizationThresholdMethod);
                 }
             }
+            fastBitmap.UnlockImage();
             return CreateBitmap(ArrayForBinarizationImage);
         }
 
@@ -134,6 +148,8 @@ namespace MRO_E_Ticket.Domain
             int widthImage = arrayImage.GetLength(0);
             int heigthImage = arrayImage.GetLength(1);
             Bitmap halfBitmap = new Bitmap(widthImage, heigthImage);
+            FastBitmap fastBitmap = new FastBitmap(halfBitmap);
+            fastBitmap.LockImage();
             int ScalePixel = 0;
             for (int i = 0; i < widthImage; i++)
             {
@@ -141,25 +157,29 @@ namespace MRO_E_Ticket.Domain
                 {
                     ScalePixel = arrayImage[i, j];
                     //verification value pixel for set color
-                    if (ScalePixel==1) { ScalePixel = 255; }
-                    halfBitmap.SetPixel(i, j, Color.FromArgb(ScalePixel, ScalePixel, ScalePixel));
+                    if (ScalePixel == 1) { ScalePixel = 255; }
+                    fastBitmap.SetPixel(i, j, Color.FromArgb(ScalePixel, ScalePixel, ScalePixel));
                 }
             }
+            fastBitmap.UnlockImage();
             return halfBitmap;
         }
         //create gray image
         public Bitmap CreateBitmapGray(int[,] arrayImage)
         {
             Bitmap halfBitmap = new Bitmap(sizeWidth, sizeHeigh);
+            FastBitmap fastBitmap = new FastBitmap(halfBitmap);
+            fastBitmap.LockImage();
             int ScalePixel = 0;
             for (int i = 0; i < (sizeWidth); i++)
             {
                 for (int j = 0; j < (sizeHeigh); j++)
                 {
                     ScalePixel = arrayImage[i, j];
-                    halfBitmap.SetPixel(i, j, Color.FromArgb(ScalePixel, ScalePixel, ScalePixel, ScalePixel));
+                    fastBitmap.SetPixel(i, j, Color.FromArgb(ScalePixel, ScalePixel, ScalePixel, ScalePixel));
                 }
             }
+            fastBitmap.UnlockImage();
             return halfBitmap;
         }
         #endregion
@@ -168,15 +188,19 @@ namespace MRO_E_Ticket.Domain
         //return matrix image
         public int[,] GetImageArray(Bitmap bitmap)
         {
+            FastBitmap fastBitmap = new FastBitmap(bitmap);
+            fastBitmap.LockImage();
             int[,] ArrayForBinarizationImage = new int[bitmap.Width, bitmap.Height];
             for (int i = 0; i < (bitmap.Width); i++)
             {
                 for (int j = 0; j < (bitmap.Height); j++)
                 {
-                    ArrayForBinarizationImage[i, j] = ColorPixel(bitmap.GetPixel(i, j).A,
-                        bitmap.GetPixel(i, j).R,
-                        bitmap.GetPixel(i, j).G,
-                        bitmap.GetPixel(i, j).B);
+                    Color oldPixel = fastBitmap.GetPixel(i, j);
+                    ArrayForBinarizationImage[i, j] = ColorPixel(
+                        oldPixel.A,
+                        oldPixel.R,
+                        oldPixel.G,
+                        oldPixel.B);
                 }
             }
             return ArrayForBinarizationImage;

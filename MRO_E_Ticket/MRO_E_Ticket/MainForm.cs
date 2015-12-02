@@ -1,27 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MRO_E_Ticket.Domain;
 using MRO_E_Ticket.Model;
-using ZedGraph;
 using System.Drawing.Imaging;
-using PerceptronLib;
+using System.ComponentModel;
+
 namespace MRO_E_Ticket
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         private Domain.ImageConverter imageConverter = new Domain.ImageConverter();
         private List<ParametersForGistogram> mainList = new List<ParametersForGistogram>();
         private List<ParametersForGistogram> DividedImageList;
-        private TransformationForTheHistogram trans = new TransformationForTheHistogram();
+        private TransformationForTheHistogram transformation = new TransformationForTheHistogram();
         private List<ImageCollection> numberImageCollection = new List<ImageCollection>();
-        //rotate image class--------
+        //rotate image class
         private RotateBitmapImage rotateBitmapImage = new RotateBitmapImage();
         #region Image
         private Bitmap originalImage;
@@ -29,9 +24,10 @@ namespace MRO_E_Ticket
         private Bitmap binary;
         private int[,] DividedImage;
         #endregion
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
+            NotifyLable.DataBindings.Add("Text", NotifyMessage.Instance, "MessageNotify");
         }
         //open menu image
         private void OpenImageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -42,6 +38,7 @@ namespace MRO_E_Ticket
                 string filePath = openFileDialog1.FileName;
                 originalImage = new Bitmap(filePath);
                 OriginalPictureBox.Image = originalImage;
+                NotifyMessage.Instance.MessageNotify = "Open";
             }
         }
         //open image method
@@ -57,7 +54,8 @@ namespace MRO_E_Ticket
             }
             return returnBitmap;
         }
-        #region TabControl
+
+        #region TabContro
         private void SaveImageInPictureBox(PictureBox picrure)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -99,8 +97,6 @@ namespace MRO_E_Ticket
             {
                 case 1:
                     #region Transfer to grayscale
-                    try
-                    {
                         imageConverter.Progress += ImageConverter_Progress;
                         if (originalImage != null)
                         {
@@ -108,62 +104,33 @@ namespace MRO_E_Ticket
                             GrayScalePictureBox.Image = grayBitmap;
                         }
                         else { throw new Exception("choose a grayscale image:"); }
-                    }
-                    catch (Exception ex)
-                    {
-                        DialogResult result1 = MessageBox.Show(ex.Message.ToString(),
-                                                 "no original image selected",
-                                                    MessageBoxButtons.YesNoCancel,
-                                                    MessageBoxIcon.Question,
-                                                    MessageBoxDefaultButton.Button2);
-                        if (result1 == DialogResult.Yes)
-                        {
 
-                            originalImage = OpenImage();
-                            OriginalPictureBox.Image = originalImage;
-                            page.SelectedIndex = 0;
-                        }
-                    }
                     break;
                 #endregion
                 case 2:
                     #region Binarization image
-                    try
+                    if (grayBitmap != null)
                     {
-                        if (grayBitmap != null)
-                        {
-                            imageConverter.Progress += ImageConverter_Progress;
-                            Bitmap binarizationImage = imageConverter.BinarizationThresholdMethodGetBitmap(grayBitmap);
-                            BinarizationPictureBox.Image = binarizationImage;
-                            binary = binarizationImage;
-                            var resultGisto = trans.Parameters(imageConverter.BinarizationThresholdMethodGetArray(grayBitmap));
-                            mainList = resultGisto;
-                        }
-                        else if (binary == null)
-                        {
-                            binary = OpenImage();
-                            BinarizationPictureBox.Image = binary;
-                            var resultGisto = trans.Parameters(imageConverter.BinarizationThresholdMethodGetArray(binary));
-                            mainList = resultGisto;
-                        }
-                        else { throw new Exception("choose a binarization image:"); }
+                        imageConverter.Progress += ImageConverter_Progress;
+                        Bitmap binarizationImage = imageConverter.BinarizationThresholdMethodGetBitmap(grayBitmap);
+                        binary = binarizationImage;
+                        var resultGisto = transformation.Parameters(imageConverter.BinarizationThresholdMethodGetArray(grayBitmap));
+                        //rotate image
+                        Bitmap afterRotete = rotateBitmapImage.RotateBitmap(binary, GetAngleRotate());
+                        BinarizationPictureBox.Image = afterRotete;
+                        binary = afterRotete;
+                        mainList = resultGisto;
                     }
-                    catch (Exception ex)
+                    else if (binary == null)
                     {
-                        DialogResult result1 = MessageBox.Show(ex.Message.ToString(),
-                                                 "no grayscale image selected",
-                                                    MessageBoxButtons.YesNoCancel,
-                                                    MessageBoxIcon.Question,
-                                                    MessageBoxDefaultButton.Button2);
-                        if (result1 == DialogResult.Yes)
-                        {
-
-                            binary = OpenImage();
-                            BinarizationPictureBox.Image = binary;
-                            page.SelectedIndex = 1;
-                        }
+                        binary = OpenImage();
+                        //rotate image
+                        Bitmap afterRotete = rotateBitmapImage.RotateBitmap(binary, GetAngleRotate());
+                        BinarizationPictureBox.Image = afterRotete;
+                        binary = afterRotete;
+                        var resultGisto = transformation.Parameters(imageConverter.BinarizationThresholdMethodGetArray(afterRotete));
+                        mainList = resultGisto;
                     }
-
                     break;
                 #endregion
                 case 3:
@@ -172,26 +139,25 @@ namespace MRO_E_Ticket
                     var arrayImage = imageConverter.BinarizationThresholdMethodGetArray(binary);
                     Segmentation segment = new Segmentation(arrayImage, mainList);
                     // remove up and down element image and
-                    SegmentationPictureBox.Image = imageConverter.CreateBitmap(segment.RemoveUpAndDownElementImage(mainList, arrayImage));
+                    Bitmap UpDownRemove = imageConverter.CreateBitmap(segment.RemoveUpAndDownElementImage(mainList, arrayImage));
                     //removing unnecessary lines segment.SelectionOfAreas()
                     var segmentImageInfo = imageConverter.CreateBitmap(segment.SelectionOfAreas());
-
                     //get array new small image
                     var arrayNewImage = imageConverter.BinarizationThresholdMethodGetArray(segmentImageInfo);
                     //get list params histogramm
-                    var paramsForHistogrammNewImage = trans.HorizontalImageGetParameters(arrayNewImage);
+                    var paramsForHistogrammNewImage = transformation.HorizontalImageGetParameters(arrayNewImage);
                     var miniArray = segment.SelectionOfAreasInHorizontalImage(paramsForHistogrammNewImage, arrayNewImage);
+                    miniArray = segment.RemoveBorder(miniArray);
                     var finishImageRecognition = imageConverter.CreateBitmap(miniArray);
                     SegmentationPictureBox.Image = finishImageRecognition;
                     //var afterBin = imageConverter.BinarizationThresholdMethodGetArray(seg);
                     //var Gisto2 = trans.HorizontalImageGetParameters(afterBin);
                     DividedImage = miniArray;
                     //get params miniImage fo segmentations numbers
-                    DividedImageList = trans.HorizontalImageGetParameters(miniArray);
-                    ImageRecognitionPictureBox1.Image = finishImageRecognition;
+                    DividedImageList = transformation.HorizontalImageGetParameters(miniArray);
+                    ImageRecognitionPictureBox1.Image =  finishImageRecognition;
                     #endregion
                     break;
-
             }
         }
         #endregion
@@ -202,16 +168,6 @@ namespace MRO_E_Ticket
             progressBar1.Maximum = maxValue;
             progressBar1.Value = value;
         }
-        //save grayScale Image
-        private void GrayScaleLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            SaveImageInPictureBox(GrayScalePictureBox);
-        }
-        //save binarization Image
-        private void BinarizationImagelinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            SaveImageInPictureBox(BinarizationPictureBox);
-        }
         //show histogramm
         private void HistogrammlinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -219,14 +175,10 @@ namespace MRO_E_Ticket
             histgramm.setData(mainList);
             histgramm.Show();
         }
-        //savre recondition Image
-        private void SaveReconditionImageLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            SaveImageInPictureBox(ImageRecognitionPictureBox1);
-        }
         //save collection image
         private void DividedIntoImageButton_Click(object sender, EventArgs e)
         {
+            NotifyMessage.Instance.MessageNotify = "Divided image";
             Segmentation segment = new Segmentation(null, null);
             numberImageCollection = segment.GetCollectionofImage(DividedImageList, DividedImage);
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -245,10 +197,15 @@ namespace MRO_E_Ticket
                         break;
                 }
             }
+            int x = 0;
+            DividedimageList1.ImageSize = new Size(50, 50);
             foreach (var item in numberImageCollection)
             {
-                item.bitmap.Save(item.Name + ".bmp", format);
+                // item.bitmap.Save(item.Name + ".bmp", format);
+                DividedimageList1.Images.Add(Image.FromFile(item.Name+".bmp"));
+                DividedListView.Items.Add("image",x++);
             }
+            DividedListView.LargeImageList = DividedimageList1;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -257,13 +214,13 @@ namespace MRO_E_Ticket
             float angle = (float)Convert.ToDouble(stringVal);
             Bitmap map = rotateBitmapImage.RotateBitmap(binary, angle);
             binary = map;
-
             BinarizationPictureBox.Image = null;
             BinarizationPictureBox.Image = imageConverter.BinarizationThresholdMethodGetBitmap(binary);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            NotifyMessage.Instance.MessageNotify = "Expaansion & Erosion operation";
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Images|*.png;*.bmp;*.jpg";
             ImageFormat format = ImageFormat.Bmp;
@@ -298,8 +255,86 @@ namespace MRO_E_Ticket
 
         private void perceptronToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            NotifyMessage.Instance.MessageNotify = "Open perceptron page";
             PerceptronViewer view = new PerceptronViewer();
             view.Show();
+        }
+
+        private void skeletizationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NotifyMessage.Instance.MessageNotify = "Open sckeletization page";
+            SkeletonizationForm skel = new SkeletonizationForm();
+            skel.Show();
+        }
+
+        private void DividedListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in DividedListView.SelectedItems)
+            {
+                var listItem = numberImageCollection[item.Index];
+                ImageViewer imageViewerForm = new ImageViewer(listItem.Name + ".bmp");
+                imageViewerForm.Show();
+            }
+        }
+
+        private float GetAngleRotate()
+        {
+            var angle = imageConverter.GetAngleImage(binary);
+            string stringVal = angle.ToString().Replace(".", ",");
+            float angleFloat = (float)Convert.ToDouble(stringVal);
+            return angleFloat;
+        }
+
+        private void Save_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            LinkLabel link = sender as LinkLabel;
+            switch(link.Name)
+            {
+                case "GrayScaleLinkLabel":
+                    SaveImageInPictureBox(GrayScalePictureBox);
+                    break;
+                case "BinarizationImagelinkLabel":
+                    SaveImageInPictureBox(BinarizationPictureBox);
+                    break;
+                case "SaveReconditionImageLinkLabel":
+                    SaveImageInPictureBox(ImageRecognitionPictureBox1);
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+    }
+    //class for notification
+    public class NotifyMessage : INotifyPropertyChanged
+    {
+        private static readonly NotifyMessage instance = new NotifyMessage();
+        private NotifyMessage() { }
+        public static NotifyMessage Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
+        public string _message;      
+        public string MessageNotify
+        {
+            get { return _message; }
+            set
+            {
+                _message = value;
+                OnPropertyChanged("MessageNotify");
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName = null)
+        {
+            var eventHandler = this.PropertyChanged;
+            if (eventHandler != null)
+            {
+                eventHandler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

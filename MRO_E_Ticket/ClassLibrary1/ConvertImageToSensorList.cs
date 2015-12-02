@@ -9,6 +9,7 @@ using PerceptronLib.Enum;
 
 namespace PerceptronLib
 {
+    [Serializable]
     public class ConvertImageToSensorList
     {
         private List<Sensors> sensorCollection = new List<Sensors>();

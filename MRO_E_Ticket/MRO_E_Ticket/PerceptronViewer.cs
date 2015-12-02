@@ -1,70 +1,97 @@
-﻿using PerceptronLib;
+﻿using ClassLibrary1.Serializer;
+using HtmlGenerators;
+using PerceptronLib;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using HtmlGenerators;
-using PerceptronLib.PerceptronArray;
-using System.IO;
 
 namespace MRO_E_Ticket
 {
     public partial class PerceptronViewer : Form
     {
+        private readonly string PathObjectSerializer = "PerceptronObject.bin";
+        private Perceptron per;
+        private string[] AllFiles;
+
         public PerceptronViewer()
         {
             InitializeComponent();
-            ParamsPerceptron.Sensors = 2500;
-            ParamsPerceptron.AJElement = 160;
-            ParamsPerceptron.StaticPerceptronArray = StaticPerceptronArray.GetArrayPerceprton();
+            ObjectSerializer<Perceptron> objSerializer = new ObjectSerializer<Perceptron>();
+            Perceptron yourObjectFromFile = objSerializer.GetSerializedObject(PathObjectSerializer);
+            if (yourObjectFromFile != null)
+            {
+                per = yourObjectFromFile;
+            }
+            else
+            {
+                per = new Perceptron(2500, 1500);
+            }
+            Load += PerceptronViewer_Load;
+        }
+
+        private void PerceptronViewer_Load(object sender, EventArgs e)
+        {
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
         {     
             HtmlTable table = new HtmlTable();
-            table.CopyMatrix(ParamsPerceptron.StaticPerceptronArray);
-            string html = table.GenerateHtml();
-            webBrowser1.DocumentText = html;
+            string html = table.GenerateHtml();         
         }
 
         private void openCollectionImageToolStripMenuItem_Click(object sender, EventArgs e)
-        {
+        {          
             string ImageFolderPath = string.Empty;
             FolderBrowserDialog FBD = new FolderBrowserDialog();
             if (FBD.ShowDialog() == DialogResult.OK)
             {
                 ImageFolderPath = FBD.SelectedPath;
             }
-            // получаем все файлы
-            string[] files = Directory.GetFiles(ImageFolderPath);
-            // перебор полученных файлов
+            AllFiles = Directory.GetFiles(ImageFolderPath);
             int x = 0;
             imageList1.ImageSize = new Size(64, 64);
-            foreach (string file in files)
+            foreach (string file in AllFiles)
             {
                 imageList1.Images.Add(Image.FromFile(file));
                 listViewImageCollection.Items.Add(file, x++);
+                string newFilePath = Path.GetFileName(file);
             }
             listViewImageCollection.LargeImageList = imageList1;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            
+          var s = per.InputsImageForPerseptron("C:\\Users\\romax\\Desktop\\Image\\one.bmp");
         }
 
         private void listViewImageCollection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Perceptron per = new Perceptron();
             foreach (ListViewItem item in listViewImageCollection.SelectedItems)
             {
-                per.OpenImage(item.Text.ToString());
+                NumberNameLabel.Text = per.InputsImageForPerseptron(item.Text);
             }
         }
+
+        private  void learningPerseptronToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PerseptronProgressBar.Maximum = AllFiles.Length;
+            int counter = 0;
+            foreach (string file in AllFiles)
+            {
+                string newFilePath = Path.GetFileName(file);
+                per.LearningPerseptron(file, newFilePath);
+                PerseptronProgressBar.Value = counter++;
+            }
+            per.EndLearning();
+            ObjectSerializer<Perceptron> objSerializer = new ObjectSerializer<Perceptron>();
+            objSerializer.SaveSerializedObject(per, PathObjectSerializer);
+            PerseptronProgressBar.Value = 0;
+            PerseptronStatusLabel.Text = "Learning";
+          
+        }
+
     }
 }

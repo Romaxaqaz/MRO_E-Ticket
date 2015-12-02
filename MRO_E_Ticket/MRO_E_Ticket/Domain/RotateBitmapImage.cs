@@ -40,7 +40,7 @@ namespace MRO_E_Ticket.Domain
             // Create the real rotation transformation.
             Matrix rotate_at_center = new Matrix();
             rotate_at_center.RotateAt(angle,
-                new PointF(76, 2086));
+                new PointF(0, 0));
 
             // Draw the image onto the new bitmap rotated.
             using (Graphics gr = Graphics.FromImage(result))

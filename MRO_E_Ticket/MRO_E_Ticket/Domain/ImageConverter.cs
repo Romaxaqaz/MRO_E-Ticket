@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using MRO_E_Ticket.Enum;
 using MRO_E_Ticket.BitmapLib;
+using MRO_E_Ticket.Model;
+
 namespace MRO_E_Ticket.Domain
 {
     public class ImageConverter
@@ -15,12 +17,12 @@ namespace MRO_E_Ticket.Domain
         private readonly double x2 = 0.587;
         private readonly double x3 = 0.114;
         #endregion
-
+        private Segmentation segment = new Segmentation(null, null);
+        private TransformationForTheHistogram transformation = new TransformationForTheHistogram();
         private readonly string TransferToGrayscaleProvess = "Transfer To Grayscale Image";
         private readonly string BinarizationThresholdMethod = "Binarization Image";
-        private int sizeHeigh = 0;
-        private int sizeWidth = 0;
         private int binarizationThreshold = 120;
+        private int HeigthBarcode = 110;
 
         public int BinarizationThreshold { get { return binarizationThreshold; } set { binarizationThreshold = value; } }
 
@@ -35,13 +37,12 @@ namespace MRO_E_Ticket.Domain
         {
             FastBitmap fastBitmap = new FastBitmap(bitmap);
             fastBitmap.LockImage();
-            int[,] ArrayForImage = new int[bitmap.Width, bitmap.Height];
-            sizeWidth = bitmap.Width;
-            sizeHeigh = bitmap.Height;
-            int progressValue = 0;
-            for (int i = 0; i < (bitmap.Width); i++)
+            int sizeWidth = bitmap.Width;
+            int sizeHeigh = bitmap.Height;
+            int[,] ArrayForImage = new int[sizeWidth, sizeHeigh];
+            for (int i = 0; i < sizeWidth; i++)
             {
-                for (int j = 0; j < (bitmap.Height); j++)
+                for (int j = 0; j < sizeHeigh; j++)
                 {
                     Color oldPixel = fastBitmap.GetPixel(i, j);
                     ArrayForImage[i, j] = GrayscalePixel(
@@ -49,10 +50,9 @@ namespace MRO_E_Ticket.Domain
                         oldPixel.G,
                         oldPixel.B);
                 }
-                progressValue++;
                 if (Progress != null)
                 {
-                    Progress(progressValue, bitmap.Width, TransferToGrayscaleProvess);
+                    Progress(i, sizeWidth, TransferToGrayscaleProvess);
                 }
             }
             fastBitmap.UnlockImage();
@@ -63,12 +63,12 @@ namespace MRO_E_Ticket.Domain
         {
             FastBitmap fastBitmap = new FastBitmap(bitmap);
             fastBitmap.LockImage();
-            int[,] ArrayForImage = new int[bitmap.Width, bitmap.Height];
-            sizeWidth = bitmap.Width;
-            sizeHeigh = bitmap.Height;
-            for (int i = 0; i < (bitmap.Width); i++)
+            int sizeWidth = bitmap.Width;
+            int sizeHeigh = bitmap.Height;
+            int[,] ArrayForImage = new int[sizeWidth, sizeHeigh];
+            for (int i = 0; i < sizeWidth; i++)
             {
-                for (int j = 0; j < (bitmap.Height); j++)
+                for (int j = 0; j < sizeHeigh; j++)
                 {
                     ArrayForImage[i, j] = GrayscalePixel(
                        fastBitmap.GetPixel(i, j).R,
@@ -93,10 +93,12 @@ namespace MRO_E_Ticket.Domain
         {
             FastBitmap fastBitmap = new FastBitmap(bitmap);
             fastBitmap.LockImage();
-            int[,] ArrayForBinarizationImage = new int[bitmap.Width, bitmap.Height];
-            for (int i = 0; i < (bitmap.Width); i++)
+            int sizeWidth = bitmap.Width;
+            int sizeHeigh = bitmap.Height;
+            int[,] ArrayForBinarizationImage = new int[sizeWidth, sizeHeigh];
+            for (int i = 0; i < sizeWidth; i++)
             {
-                for (int j = 0; j < (bitmap.Height); j++)
+                for (int j = 0; j < sizeHeigh; j++)
                 {
                     ArrayForBinarizationImage[i, j] = ResultPixelColorAfterBinarization(fastBitmap.GetPixel(i, j).R);
                 }
@@ -109,18 +111,18 @@ namespace MRO_E_Ticket.Domain
         {
             FastBitmap fastBitmap = new FastBitmap(bitmap);
             fastBitmap.LockImage();
-            int[,] ArrayForBinarizationImage = new int[bitmap.Width, bitmap.Height];
-            int progressValue = 0;
-            for (int i = 0; i < (bitmap.Width); i++)
+            int sizeWidth = bitmap.Width;
+            int sizeHeigh = bitmap.Height;
+            int[,] ArrayForBinarizationImage = new int[sizeWidth, sizeHeigh];
+            for (int i = 0; i < sizeWidth; i++)
             {
-                for (int j = 0; j < (bitmap.Height); j++)
+                for (int j = 0; j < sizeHeigh; j++)
                 {
                     ArrayForBinarizationImage[i, j] = ResultPixelColorAfterBinarization(fastBitmap.GetPixel(i, j).R);
                 }
-                progressValue++;
                 if (Progress != null)
                 {
-                    Progress(progressValue, bitmap.Width, BinarizationThresholdMethod);
+                    Progress(i, bitmap.Width, BinarizationThresholdMethod);
                 }
             }
             fastBitmap.UnlockImage();
@@ -167,13 +169,15 @@ namespace MRO_E_Ticket.Domain
         //create gray image
         public Bitmap CreateBitmapGray(int[,] arrayImage)
         {
-            Bitmap halfBitmap = new Bitmap(sizeWidth, sizeHeigh);
+            int widthImage = arrayImage.GetLength(0);
+            int heigthImage = arrayImage.GetLength(1);
+            Bitmap halfBitmap = new Bitmap(widthImage, heigthImage);
             FastBitmap fastBitmap = new FastBitmap(halfBitmap);
             fastBitmap.LockImage();
             int ScalePixel = 0;
-            for (int i = 0; i < (sizeWidth); i++)
+            for (int i = 0; i < widthImage; i++)
             {
-                for (int j = 0; j < (sizeHeigh); j++)
+                for (int j = 0; j < heigthImage; j++)
                 {
                     ScalePixel = arrayImage[i, j];
                     fastBitmap.SetPixel(i, j, Color.FromArgb(ScalePixel, ScalePixel, ScalePixel, ScalePixel));
@@ -203,16 +207,15 @@ namespace MRO_E_Ticket.Domain
                         oldPixel.B);
                 }
             }
+            fastBitmap.UnlockImage();
             return ArrayForBinarizationImage;
         }
         //chek pixel value
         private int ColorPixel(int a, int r, int g, int b)
         {
             int result = 0;
-            if (r == 255 &&
-                g == 255 &&
-                b == 255 &&
-                a == 255)
+            if (r == 255 && g == 255 &&
+                b == 255 && a == 255)
             {
                 result = 1;
             }
@@ -224,6 +227,207 @@ namespace MRO_E_Ticket.Domain
         }
         #endregion
 
+        #region ImageRotation
+        public double GetAngleImage(Bitmap bmp)
+        {
+            List<ParametersForGistogram> paramsList = new List<ParametersForGistogram>();
+            int topDelete = 500;
+            int buttomDelete = 0;
+            int startBarcode = 0;
+            int endBarcode = 0;
+            int widthFirstLines = 0;
+
+            int[,] imageArray = GetImageArray(bmp);
+            int[,] newImageArray = new int[imageArray.GetLength(0), imageArray.GetLength(1) - (topDelete + buttomDelete)];
+            //create new array which remove top page
+            for (int i = 0; i < imageArray.GetLength(0); i++)
+            {
+                for (int j = topDelete; j < imageArray.GetLength(1) - buttomDelete; j++)
+                {
+                    newImageArray[i, j - topDelete] = imageArray[i, j];
+                }
+            }
+            var CountPixelinEachRowList = transformation.Parameters(newImageArray);
+            var paramsSegmentList = segment.ReturnParamsList(CountPixelinEachRowList);
+            //search barcode
+            var maxWidth = paramsSegmentList.Max(x => x.WidthPixels);
+            //set start and end position barcode
+            foreach (var item in paramsSegmentList)
+            {
+                if (item.WidthPixels == maxWidth)
+                {
+                    startBarcode = item.StartPositionPixel + topDelete;
+                    endBarcode = item.EndPositionPixel + topDelete;
+                }
+            }
+            //get position first black pixel
+            var PositionTheFerstBlackPixel = GetTheFirstBlackPosition(imageArray, startBarcode);
+            int arrayIstart = PositionTheFerstBlackPixel[0];
+            int arrayJstart = PositionTheFerstBlackPixel[1];
+            
+
+            int oneCounter = arrayIstart;
+            int startPixelPosition = 0;
+            int endPixelPosition = 0;
+            int lineCounter = arrayIstart;
+            startPixelPosition = arrayIstart;
+
+            //get with first line barcode
+            while (imageArray[lineCounter, arrayJstart - 1] == 0)
+            {
+                lineCounter++;
+                widthFirstLines++;
+            }
+            endPixelPosition = widthFirstLines - 1;
+
+            int leftRotate = GetCounVerticlaBlackPixel(imageArray, arrayIstart, arrayJstart);
+            int rightRotate = GetCounVerticlaBlackPixel(imageArray, arrayIstart + endPixelPosition, arrayJstart);
+            double angle = 0;
+            //if greater leftRotate, the inclination to the left and vice versa
+            if (rightRotate > leftRotate)
+            {
+                //если справа белый пиксель, то пока не черный считаем
+                double bufferLeft2 = GeRightDistanceToThePexel(imageArray, arrayIstart, arrayJstart);
+                if (bufferLeft2 <= 0)
+                {
+                    bufferLeft2 = 1.5;
+                }
+                angle = (Math.Atan(HeigthBarcode / bufferLeft2) * (180 / Math.PI)) - 90;
+            }
+            else
+            {
+                double bufferLeft3 = GeLeftDistanceToThePexel(imageArray, (arrayIstart + endPixelPosition) - 1, arrayJstart);
+                if (bufferLeft3 <= 0)
+                {
+                    bufferLeft3 = 1.5;
+                }
+                angle = 90 - (Math.Atan(HeigthBarcode / bufferLeft3) * (180 / Math.PI));
+                if (bufferLeft3 == 1)
+                {
+                    angle = 0;
+                }
+
+            }
+
+            return angle;
+        }
+
+        private int GeRightDistanceToThePexel(int[,] imageArray, int startFirstPixelX, int startPixelY, int maxHeigthBarCode = 105)
+        {
+            int counterPixelDistance = 0;
+            if (imageArray[startFirstPixelX + 1, startPixelY - maxHeigthBarCode] == 1)
+            {
+                while (imageArray[startFirstPixelX, startPixelY - maxHeigthBarCode] != 0)
+                {
+                    if (startFirstPixelX < imageArray.GetLength(0))
+                    {
+                        counterPixelDistance++;
+                        startFirstPixelX++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            //если справа черный пиксель, пока не белый считаем
+            else
+            {
+                while (imageArray[startFirstPixelX, startPixelY - maxHeigthBarCode] != 1)
+                {
+                    counterPixelDistance++;
+                    startFirstPixelX++;
+                }
+                counterPixelDistance--;
+            }
+            return counterPixelDistance;
+        }
+
+        private int GeLeftDistanceToThePexel(int[,] imageArray, int startFirstPixelX, int startPixelY, int maxHeigthBarCode = 105)
+        {
+            int counterPixelDistance = 0;
+
+            if (imageArray[startFirstPixelX - 1, startPixelY - maxHeigthBarCode] == 1)
+            {
+                while (imageArray[startFirstPixelX, startPixelY - maxHeigthBarCode] != 0)
+                {
+                    if (startFirstPixelX > 0)
+                    {
+                        startFirstPixelX--;
+                        counterPixelDistance++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            //если справа черный пиксель, пока не белый считаем
+            else
+            {
+                while (imageArray[startFirstPixelX, startPixelY - maxHeigthBarCode] != 1)
+                {
+                    counterPixelDistance++;
+                    startFirstPixelX--;
+                }
+                counterPixelDistance--;
+            }
+            return counterPixelDistance;
+        }
+
+        private int[] GetTheFirstBlackPosition(int[,] array, int jPos)
+        {
+            int[] resultPosition = new int[2];
+            int oldI = array.GetLength(0) - 1;
+            int oldJ = array.GetLength(1) - 1;
+            int counterRepeatI = 0;
+            bool counterRepeat = true;
+            //If a very large steering angle
+            if (jPos < 1600) { jPos += 200; }
+            //going from top to bottom and and 
+            //if the value is less than it was before, the reserve position
+            for (int j = array.GetLength(1) - 1; j > jPos; j--)
+            {
+                for (int i = 0; i < 200; i++)
+                {
+                    if (array[i, j] == 0)
+                    {
+                        if (i < oldI && counterRepeat)
+                        {
+                            oldI = i;
+                            oldJ = j;
+                            counterRepeatI = 0;
+                        }
+                        if (i == oldI)
+                        {
+                            counterRepeatI++;
+                        }
+                        if (counterRepeatI > 9)
+                        {
+                            counterRepeat = false;
+                        }
+                    }
+                }
+            }
+            // +1 to allow a black pixel
+            resultPosition[0] = oldI;
+            resultPosition[1] = oldJ + 1;
+            return resultPosition;
+        }
+
+        private int GetCounVerticlaBlackPixel(int[,] array, int startFirstPixelX, int startPixelY)
+        {
+            int resultCounter = 0;
+            for (int j = startPixelY; j > startPixelY - 100; j--)
+            {
+                if (array[startFirstPixelX, j] == 0)
+                {
+                    resultCounter++;
+                }
+            }
+            return resultCounter;
+        }
+        #endregion
 
     }
 }

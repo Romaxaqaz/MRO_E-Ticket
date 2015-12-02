@@ -44,14 +44,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Concrete\Addressable.cs" />
+    <Compile Include="Concrete\NumberParameters.cs" />
     <Compile Include="ConvertImageToSensorList.cs" />
     <Compile Include="Enum\ClassName.cs" />
     <Compile Include="Enum\PixelColor.cs" />
     <Compile Include="Model\Sensors.cs" />
-    <Compile Include="ParamsPerceptron.cs" />
     <Compile Include="Perceptron.cs" />
-    <Compile Include="PerceptronArray\StaticPerceptronArray.cs" />
+    <Compile Include="PerceptronArray\PerceptronArray.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializer\ObjectSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HtmlGenerators\HtmlGeneratorsLib.csproj">

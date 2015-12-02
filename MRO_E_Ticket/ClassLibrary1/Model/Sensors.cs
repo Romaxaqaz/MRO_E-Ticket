@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace PerceptronLib.Model
 {
+    [Serializable]
     public class Sensors
     {
         public int Value { get; set; }

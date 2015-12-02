@@ -124,9 +124,9 @@ namespace MRO_E_Ticket
         public int[,] SelectionOfAreasInHorizontalImage(List<ParametersForGistogram> list, int[,] array)
         {
             full = ReturnParamsList(list);
-            int border = 5;
+            int border = 4;
             var arrayWidth = full.Max(x => x.WidthPixels);
-            int[,] bufferArray = new int[arrayWidth - (border * 2), array.GetLength(1) - (border * 2)];
+            int[,] bufferArray = new int[arrayWidth - (border * 2) + 1, array.GetLength(1) - (border * 2)];
 
             foreach (var item in full)
             {
@@ -158,7 +158,7 @@ namespace MRO_E_Ticket
             List<ParametersForGistogram> paramsForImage = new List<ParametersForGistogram>();
             //It takes into account the latest pixel
             int additionalPixel = 2;
-
+            int[,] cleanArray = RemoveBorder(array);
             paramsForImage = ReturnParamsList(list);
 
             int numberName = 0;
@@ -173,14 +173,15 @@ namespace MRO_E_Ticket
                     imageConverter = new MRO_E_Ticket.Domain.ImageConverter();
                     int jOne = item.StartPositionPixel;
                     int jTwo = item.EndPositionPixel + additionalPixel;
-                    bufferArray = new int[item.WidthPixels + additionalPixel, array.GetLength(1)];
-                    for (int i = jOne; i < array.GetLength(0); i++)
+                    bufferArray = new int[item.WidthPixels + additionalPixel, cleanArray.GetLength(1)];
+
+                    for (int i = jOne; i < cleanArray.GetLength(0); i++)
                     {
-                        for (int j = 0; j < bufferArray.GetLength(1); j++)
+                        for (int j = 0; j < cleanArray.GetLength(1); j++)
                         {
                             if (i < jTwo)
                             {
-                                bufferArray[i - jOne, j] = array[i, j];
+                                bufferArray[i - jOne, j] = cleanArray[i, j];
                             }
                         }
                     }
@@ -194,7 +195,7 @@ namespace MRO_E_Ticket
             return collection;
         }
         //return params image for segmentation
-        private List<ParametersForGistogram> ReturnParamsList(List<ParametersForGistogram> initialList)
+        public List<ParametersForGistogram> ReturnParamsList(List<ParametersForGistogram> initialList)
         {
             List<ParametersForGistogram> obtained = new List<ParametersForGistogram>();
             //start counting
@@ -273,6 +274,48 @@ namespace MRO_E_Ticket
                 maxArray = arrayInput;
             }
             return maxArray;
+        }
+
+        public int[,] RemoveBorder(int[,] array)
+        {
+            int[,] newArray = null;
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    if (j <= 4)
+                    {
+                        array[i, j] = 255;
+                    }
+                    if (j >= array.GetLength(1) - 4)
+                    {
+                        array[i, j] = 255;
+                    }
+                    if (i <= 1)
+                    {
+                        array[i, j] = 255;
+                    }
+                    if (i >= array.GetLength(0) - 1)
+                    {
+                        array[i, j] = 255;
+                    }
+
+                }
+            }
+            if (array.GetLength(0) > 50)
+            {
+                newArray = new int[array.GetLength(0), array.GetLength(1) - 1];
+                for (int i = 0; i < array.GetLength(0); i++)
+                {
+                    for (int j = 0; j < array.GetLength(1) - 1; j++)
+                    {
+                        newArray[i, j] = array[i, j];
+                    }
+                }
+            }
+
+
+            return newArray;
         }
     }
 }

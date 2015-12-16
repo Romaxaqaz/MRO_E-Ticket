@@ -6,16 +6,23 @@ using MRO_E_Ticket.Domain;
 using MRO_E_Ticket.Model;
 using System.Drawing.Imaging;
 using System.ComponentModel;
+using ClassLibrary1.Serializer;
+using PerceptronLib;
+using NearestNeighbor;
 
 namespace MRO_E_Ticket
 {
     public partial class MainForm : Form
     {
+        private SkeletonizationImageLTRB skelet = new SkeletonizationImageLTRB();
         private Domain.ImageConverter imageConverter = new Domain.ImageConverter();
         private List<ParametersForGistogram> mainList = new List<ParametersForGistogram>();
         private List<ParametersForGistogram> DividedImageList;
         private TransformationForTheHistogram transformation = new TransformationForTheHistogram();
         private List<ImageCollection> numberImageCollection = new List<ImageCollection>();
+        private readonly string PathObjectSerializer = "PerceptronObject.bin";
+        private Perceptron per;
+        private LambdaArray lamArrayForm = new LambdaArray();
         //rotate image class
         private RotateBitmapImage rotateBitmapImage = new RotateBitmapImage();
         #region Image
@@ -27,8 +34,33 @@ namespace MRO_E_Ticket
         public MainForm()
         {
             InitializeComponent();
-            NotifyLable.DataBindings.Add("Text", NotifyMessage.Instance, "MessageNotify");
+            lamArrayForm.FormClosing += LamArrayForm_FormClosing;
+            Load += MainForm_Load;
         }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            ObjectSerializer<Perceptron> objSerializer = new ObjectSerializer<Perceptron>();
+            Perceptron yourObjectFromFile = objSerializer.GetSerializedObject(PathObjectSerializer);
+            if (yourObjectFromFile != null)
+            {
+                per = yourObjectFromFile;
+            }
+            else
+            {
+                MessageBox.Show("Perceptron not trained");
+            }
+        }
+
+        private void LamArrayForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                lamArrayForm.Hide();
+            }
+        }
+
         //open menu image
         private void OpenImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -38,7 +70,6 @@ namespace MRO_E_Ticket
                 string filePath = openFileDialog1.FileName;
                 originalImage = new Bitmap(filePath);
                 OriginalPictureBox.Image = originalImage;
-                NotifyMessage.Instance.MessageNotify = "Open";
             }
         }
         //open image method
@@ -97,29 +128,35 @@ namespace MRO_E_Ticket
             {
                 case 1:
                     #region Transfer to grayscale
-                        imageConverter.Progress += ImageConverter_Progress;
-                        if (originalImage != null)
-                        {
-                            grayBitmap = imageConverter.TransferToGrayscaleGetBitmap(originalImage);
-                            GrayScalePictureBox.Image = grayBitmap;
-                        }
-                        else { throw new Exception("choose a grayscale image:"); }
+                    imageConverter.Progress += ImageConverter_Progress;
+                    if (originalImage != null)
+                    {
+                        grayBitmap = imageConverter.TransferToGrayscaleGetBitmap(originalImage);
+                        GrayScalePictureBox.Image = grayBitmap;
+                    }
+                    else
+                    {
+                        grayBitmap = OpenImage();
+                        GrayScalePictureBox.Image = grayBitmap;
+                    }
 
                     break;
                 #endregion
                 case 2:
                     #region Binarization image
+                    ThresholdValue();
                     if (grayBitmap != null)
                     {
                         imageConverter.Progress += ImageConverter_Progress;
                         Bitmap binarizationImage = imageConverter.BinarizationThresholdMethodGetBitmap(grayBitmap);
                         binary = binarizationImage;
-                        var resultGisto = transformation.Parameters(imageConverter.BinarizationThresholdMethodGetArray(grayBitmap));
                         //rotate image
                         Bitmap afterRotete = rotateBitmapImage.RotateBitmap(binary, GetAngleRotate());
-                        BinarizationPictureBox.Image = afterRotete;
                         binary = afterRotete;
+                        BinarizationPictureBox.Image = binary;
+                        var resultGisto = transformation.Parameters(imageConverter.BinarizationThresholdMethodGetArray(binary));
                         mainList = resultGisto;
+
                     }
                     else if (binary == null)
                     {
@@ -155,7 +192,10 @@ namespace MRO_E_Ticket
                     DividedImage = miniArray;
                     //get params miniImage fo segmentations numbers
                     DividedImageList = transformation.HorizontalImageGetParameters(miniArray);
-                    ImageRecognitionPictureBox1.Image =  finishImageRecognition;
+                    ImageRecognitionPictureBox1.Image = finishImageRecognition;
+                    DividedIntoImageButton.Enabled = true;
+                    binary = null;
+                    grayBitmap = null;
                     #endregion
                     break;
             }
@@ -178,34 +218,32 @@ namespace MRO_E_Ticket
         //save collection image
         private void DividedIntoImageButton_Click(object sender, EventArgs e)
         {
-            NotifyMessage.Instance.MessageNotify = "Divided image";
+            ObjectSerializer<Perceptron> objSerializer = new ObjectSerializer<Perceptron>();
+            Perceptron yourObjectFromFile = objSerializer.GetSerializedObject(PathObjectSerializer);
+            if (yourObjectFromFile != null)
+            {
+                per = yourObjectFromFile;
+            }
+            else
+            {
+                MessageBox.Show("Perceptron not trained");
+            }
             Segmentation segment = new Segmentation(null, null);
             numberImageCollection = segment.GetCollectionofImage(DividedImageList, DividedImage);
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Images|*.png;*.bmp;*.jpg";
             ImageFormat format = ImageFormat.Bmp;
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
             if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                string ext = System.IO.Path.GetExtension(saveFileDialog.FileName);
-                switch (ext)
+                int x = 0;
+                DividedimageList1.ImageSize = new Size(50, 50);
+                foreach (var item in numberImageCollection)
                 {
-                    case ".jpg":
-                        format = ImageFormat.Jpeg;
-                        break;
-                    case ".bmp":
-                        format = ImageFormat.Bmp;
-                        break;
+                    item.bitmap.Save(saveFileDialog.FileName + item.Name + ".bmp", format);
+                    DividedimageList1.Images.Add(Image.FromFile(saveFileDialog.FileName + item.Name + ".bmp"));
+                    DividedListView.Items.Add("image", x++);
                 }
+                DividedListView.LargeImageList = DividedimageList1;
             }
-            int x = 0;
-            DividedimageList1.ImageSize = new Size(50, 50);
-            foreach (var item in numberImageCollection)
-            {
-                // item.bitmap.Save(item.Name + ".bmp", format);
-                DividedimageList1.Images.Add(Image.FromFile(item.Name+".bmp"));
-                DividedListView.Items.Add("image",x++);
-            }
-            DividedListView.LargeImageList = DividedimageList1;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -220,53 +258,55 @@ namespace MRO_E_Ticket
 
         private void button2_Click(object sender, EventArgs e)
         {
-            NotifyMessage.Instance.MessageNotify = "Expaansion & Erosion operation";
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Images|*.png;*.bmp;*.jpg";
-            ImageFormat format = ImageFormat.Bmp;
-            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (ExpansionCheckBox.Checked || ErosionCheckBox.Checked || SceletizationCheckBox1.Checked)
             {
-                string ext = System.IO.Path.GetExtension(saveFileDialog.FileName);
-                switch (ext)
+
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                ImageFormat format = ImageFormat.Bmp;
+                if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    case ".jpg":
-                        format = ImageFormat.Jpeg;
-                        break;
-                    case ".bmp":
-                        format = ImageFormat.Bmp;
-                        break;
+                    if (ExpansionCheckBox.Checked)
+                    {
+                        foreach (var item in ExpansionAndErosion.GetResultImageAfterExpansion(numberImageCollection, "Ex"))
+                        {
+                            item.bitmap.Save(saveFileDialog.FileName + item.Name + ".bmp", format);
+                        }
+                    }
+                    if (ErosionCheckBox.Checked)
+                    {
+                        foreach (var item in ExpansionAndErosion.GetResultImageAfterErosion(numberImageCollection, "Er"))
+                        {
+                            item.bitmap.Save(saveFileDialog.FileName + item.Name + ".bmp", format);
+                        }
+                    }
+                    if (SceletizationCheckBox1.Checked)
+                    {
+                        foreach (var item in numberImageCollection)
+                        {
+                            skelet.SkeletizationRun(item.bitmap).Save(saveFileDialog.FileName + item.Name + "_skelet.bmp", format);
+                        }
+                    }
                 }
             }
-            if (ExpansionCheckBox.Checked)
+            else
             {
-                foreach (var item in ExpansionAndErosion.GetResultImageAfterExpansion(numberImageCollection, "Ex"))
-                {
-                    item.bitmap.Save(item.Name + ".bmp", format);
-                }
+                MessageBox.Show("Not Set filtering method");
             }
-            if (ErosionCheckBox.Checked)
-            {
-                foreach (var item in ExpansionAndErosion.GetResultImageAfterErosion(numberImageCollection, "Er"))
-                {
-                    item.bitmap.Save(item.Name + ".bmp", format);
-                }
-            }
+
         }
 
         private void perceptronToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            NotifyMessage.Instance.MessageNotify = "Open perceptron page";
             PerceptronViewer view = new PerceptronViewer();
             view.Show();
         }
-
+        //open skelerization form
         private void skeletizationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            NotifyMessage.Instance.MessageNotify = "Open sckeletization page";
             SkeletonizationForm skel = new SkeletonizationForm();
             skel.Show();
         }
-
+        //open individual image in collection
         private void DividedListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             foreach (ListViewItem item in DividedListView.SelectedItems)
@@ -276,7 +316,7 @@ namespace MRO_E_Ticket
                 imageViewerForm.Show();
             }
         }
-
+        //get angle rotate image
         private float GetAngleRotate()
         {
             var angle = imageConverter.GetAngleImage(binary);
@@ -284,11 +324,11 @@ namespace MRO_E_Ticket
             float angleFloat = (float)Convert.ToDouble(stringVal);
             return angleFloat;
         }
-
+        //event link clicked
         private void Save_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             LinkLabel link = sender as LinkLabel;
-            switch(link.Name)
+            switch (link.Name)
             {
                 case "GrayScaleLinkLabel":
                     SaveImageInPictureBox(GrayScalePictureBox);
@@ -303,38 +343,167 @@ namespace MRO_E_Ticket
                     throw new InvalidOperationException();
             }
         }
-    }
-    //class for notification
-    public class NotifyMessage : INotifyPropertyChanged
-    {
-        private static readonly NotifyMessage instance = new NotifyMessage();
-        private NotifyMessage() { }
-        public static NotifyMessage Instance
+        //set thresold binarization
+        private void ThresholdValue()
         {
-            get
+            if (MethodBinarizationtoolStripComboBox1.SelectedIndex.ToString() == "-1")
             {
-                return instance;
+                imageConverter.BinarizationThreshold = 120;
+            }
+            else
+            {
+                if (toolStripTextBox1.Text != "")
+                {
+                    imageConverter.BinarizationThreshold = int.Parse(toolStripTextBox1.Text);
+                }
             }
         }
-        public string _message;      
-        public string MessageNotify
-        {
-            get { return _message; }
-            set
-            {
-                _message = value;
-                OnPropertyChanged("MessageNotify");
-            }
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged(string propertyName = null)
+        private void toolStripTextBox1_Click(object sender, EventArgs e)
         {
-            var eventHandler = this.PropertyChanged;
-            if (eventHandler != null)
+
+        }
+        //activate toolStripTextbox
+        private void MethodBinarizationtoolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (MethodBinarizationtoolStripComboBox1.SelectedIndex == 1)
             {
-                eventHandler(this, new PropertyChangedEventArgs(propertyName));
+                toolStripTextBox1.Enabled = true;
+            }
+            else
+            {
+                toolStripTextBox1.Enabled = false;
             }
         }
+        //recpgnize image
+        private void RecongnizeButton_Click(object sender, EventArgs e)
+        {
+            if (numberImageCollection != null)
+            {
+                ResultLable.Text = "";
+                foreach (var item in numberImageCollection)
+                {
+                    ResultLable.Text = ResultLable.Text + NumbersOfString(per.InputsImageForPerseptron(item.bitmap));
+                    per.LearningPerseptron("", per.InputsImageForPerseptron(item.bitmap), item.bitmap);
+                }
+                per.EndLearning();
+                SavePerceptron();
+                lamArrayForm.SetText(per.dictionaryLambdaElement, "Compleate");
+                lamArrayForm.ShowArray();
+                lamArrayForm.Refresh();
+            }
+            else
+            {
+                MessageBox.Show("Collection image empty");
+            }
+
+        }
+        //get number of numberName
+        private string NumbersOfString(string numbername)
+        {
+            string result = numbername;
+            switch (result)
+            {
+                case "Null": result = "0"; break;
+                case "One": result = "1"; break;
+                case "Two": result = "2"; break;
+                case "Three": result = "3"; break;
+                case "Four": result = "4"; break;
+                case "Five": result = "5"; break;
+                case "Six": result = "6"; break;
+                case "Seven": result = "7"; break;
+                case "Eight": result = "8"; break;
+                case "Nine": result = "9"; break;
+                default: result = "-"; break;
+            }
+            return result;
+        }
+
+        private void nearestNeighborToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NeighborForm neighBor = new NeighborForm();
+            neighBor.Show();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (numberImageCollection != null)
+            {
+                NeighbLable.Text = "";
+                Neighbor neir = new Neighbor();
+                ObjectSerializer<Neighbor> objSerializer = new ObjectSerializer<Neighbor>();
+                Neighbor yourObjectFromFile = objSerializer.GetSerializedObject("Neighbor.bin");
+                if (yourObjectFromFile != null)
+                {
+                    neir = yourObjectFromFile;
+                }
+                else
+                {
+                    MessageBox.Show("Neighbor not trained");
+                }
+                foreach (var item in numberImageCollection)
+                {
+                    NeighbLable.Text = NeighbLable.Text + neir.NameClass(item.bitmap);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Collection image empty");
+            }
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+                lamArrayForm.SetText(per.dictionaryLambdaElement, "Open learning");
+                lamArrayForm.ShowArray();
+                lamArrayForm.Show();  
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void SavePerceptron()
+        {
+            ObjectSerializer<Perceptron> objSerializer = new ObjectSerializer<Perceptron>();
+            objSerializer.SaveSerializedObject(per, PathObjectSerializer);
+        }
+
+        private void ValueNumberTrue_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void PerceptronFromAnswer_Click(object sender, EventArgs e)
+        {
+            if (numberImageCollection != null)
+            {
+                ResultLable.Text = "";
+                foreach (var item in numberImageCollection)
+                {
+                    ResultPerceptronFromAAnswer.Text = ResultPerceptronFromAAnswer.Text + NumbersOfString(per.InputsImageForPerseptronFromAnswer(item.bitmap));
+                    per.LearningPerseptronFromAnswer("", per.InputsImageForPerseptronFromAnswer(item.bitmap), item.bitmap);
+                }
+                per.EndLearning();
+                SavePerceptron();
+                lamArrayForm.SetText(per.dictionaryLambdaElement, "Compleate");
+                lamArrayForm.ShowArray();
+                lamArrayForm.Refresh();
+            }
+            else
+            {
+                MessageBox.Show("Collection image empty");
+            }
+        }
+
+        private void LambdaArrayFromAnswer_Click(object sender, EventArgs e)
+        {
+            lamArrayForm.SetText(per.dictionaryLambdaElementAnswer, "Open learning");
+            lamArrayForm.ShowArray();
+            lamArrayForm.Show();
+        }
     }
+
+    //class for notification
 }

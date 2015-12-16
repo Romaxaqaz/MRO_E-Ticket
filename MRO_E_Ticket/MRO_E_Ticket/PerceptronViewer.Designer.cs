@@ -29,9 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.openCollectionImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.learningPerseptronToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.listViewImageCollection = new System.Windows.Forms.ListView();
             this.label1 = new System.Windows.Forms.Label();
@@ -43,35 +40,17 @@
             this.PerseptronProgressBar = new System.Windows.Forms.ProgressBar();
             this.label4 = new System.Windows.Forms.Label();
             this.NumberNameLabel = new System.Windows.Forms.Label();
-            this.menuStrip1.SuspendLayout();
+            this.openCollectionImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.learningPerseptronToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lambdaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.button1 = new System.Windows.Forms.Button();
+            this.WithoutAanswerRadioButton = new System.Windows.Forms.RadioButton();
+            this.FromAnswerRadioButton = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openCollectionImageToolStripMenuItem,
-            this.learningPerseptronToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(644, 24);
-            this.menuStrip1.TabIndex = 2;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // openCollectionImageToolStripMenuItem
-            // 
-            this.openCollectionImageToolStripMenuItem.Name = "openCollectionImageToolStripMenuItem";
-            this.openCollectionImageToolStripMenuItem.Size = new System.Drawing.Size(141, 20);
-            this.openCollectionImageToolStripMenuItem.Text = "Open Collection Image";
-            this.openCollectionImageToolStripMenuItem.Click += new System.EventHandler(this.openCollectionImageToolStripMenuItem_Click);
-            // 
-            // learningPerseptronToolStripMenuItem
-            // 
-            this.learningPerseptronToolStripMenuItem.Name = "learningPerseptronToolStripMenuItem";
-            this.learningPerseptronToolStripMenuItem.Size = new System.Drawing.Size(125, 20);
-            this.learningPerseptronToolStripMenuItem.Text = "Learning perseptron";
-            this.learningPerseptronToolStripMenuItem.Click += new System.EventHandler(this.learningPerseptronToolStripMenuItem_Click);
             // 
             // imageList1
             // 
@@ -156,9 +135,10 @@
             // label4
             // 
             this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label4.Location = new System.Drawing.Point(425, 158);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(73, 13);
+            this.label4.Size = new System.Drawing.Size(97, 17);
             this.label4.TabIndex = 9;
             this.label4.Text = "Number name";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -166,11 +146,88 @@
             // NumberNameLabel
             // 
             this.NumberNameLabel.AutoSize = true;
-            this.NumberNameLabel.Location = new System.Drawing.Point(504, 158);
+            this.NumberNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.NumberNameLabel.Location = new System.Drawing.Point(528, 158);
             this.NumberNameLabel.Name = "NumberNameLabel";
-            this.NumberNameLabel.Size = new System.Drawing.Size(33, 13);
+            this.NumberNameLabel.Size = new System.Drawing.Size(49, 20);
             this.NumberNameLabel.TabIndex = 10;
             this.NumberNameLabel.Text = "name";
+            // 
+            // openCollectionImageToolStripMenuItem
+            // 
+            this.openCollectionImageToolStripMenuItem.Name = "openCollectionImageToolStripMenuItem";
+            this.openCollectionImageToolStripMenuItem.Size = new System.Drawing.Size(141, 20);
+            this.openCollectionImageToolStripMenuItem.Text = "Open Collection Image";
+            this.openCollectionImageToolStripMenuItem.Click += new System.EventHandler(this.openCollectionImageToolStripMenuItem_Click);
+            // 
+            // learningPerseptronToolStripMenuItem
+            // 
+            this.learningPerseptronToolStripMenuItem.Name = "learningPerseptronToolStripMenuItem";
+            this.learningPerseptronToolStripMenuItem.Size = new System.Drawing.Size(125, 20);
+            this.learningPerseptronToolStripMenuItem.Text = "Learning perseptron";
+            this.learningPerseptronToolStripMenuItem.Click += new System.EventHandler(this.learningPerseptronToolStripMenuItem_Click);
+            // 
+            // lambdaToolStripMenuItem
+            // 
+            this.lambdaToolStripMenuItem.Name = "lambdaToolStripMenuItem";
+            this.lambdaToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+            this.lambdaToolStripMenuItem.Text = "Lambda";
+            this.lambdaToolStripMenuItem.Click += new System.EventHandler(this.lambdaToolStripMenuItem_Click);
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openCollectionImageToolStripMenuItem,
+            this.learningPerseptronToolStripMenuItem,
+            this.lambdaToolStripMenuItem,
+            this.toolStripMenuItem1});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(644, 24);
+            this.menuStrip1.TabIndex = 2;
+            this.menuStrip1.Text = "Learning perseptron from answer";
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(194, 20);
+            this.toolStripMenuItem1.Text = "Learning perseptron from answer";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(423, 278);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(213, 23);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Lambda arrays";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // WithoutAanswerRadioButton
+            // 
+            this.WithoutAanswerRadioButton.AutoSize = true;
+            this.WithoutAanswerRadioButton.Location = new System.Drawing.Point(164, 27);
+            this.WithoutAanswerRadioButton.Name = "WithoutAanswerRadioButton";
+            this.WithoutAanswerRadioButton.Size = new System.Drawing.Size(96, 17);
+            this.WithoutAanswerRadioButton.TabIndex = 12;
+            this.WithoutAanswerRadioButton.TabStop = true;
+            this.WithoutAanswerRadioButton.Text = "without answer";
+            this.WithoutAanswerRadioButton.UseVisualStyleBackColor = true;
+            this.WithoutAanswerRadioButton.CheckedChanged += new System.EventHandler(this.WithoutAanswerRadioButton_CheckedChanged);
+            // 
+            // FromAnswerRadioButton
+            // 
+            this.FromAnswerRadioButton.AutoSize = true;
+            this.FromAnswerRadioButton.Location = new System.Drawing.Point(266, 28);
+            this.FromAnswerRadioButton.Name = "FromAnswerRadioButton";
+            this.FromAnswerRadioButton.Size = new System.Drawing.Size(82, 17);
+            this.FromAnswerRadioButton.TabIndex = 13;
+            this.FromAnswerRadioButton.TabStop = true;
+            this.FromAnswerRadioButton.Text = "from answer";
+            this.FromAnswerRadioButton.UseVisualStyleBackColor = true;
+            this.FromAnswerRadioButton.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
             // PerceptronViewer
             // 
@@ -178,6 +235,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.MediumSpringGreen;
             this.ClientSize = new System.Drawing.Size(644, 309);
+            this.Controls.Add(this.FromAnswerRadioButton);
+            this.Controls.Add(this.WithoutAanswerRadioButton);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.NumberNameLabel);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.PerseptronProgressBar);
@@ -188,29 +248,34 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "PerceptronViewer";
             this.Text = "PerceptronViewer";
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem openCollectionImageToolStripMenuItem;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ListView listViewImageCollection;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox AJElementsCountTextBox;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ToolStripMenuItem learningPerseptronToolStripMenuItem;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label PerseptronStatusLabel;
         private System.Windows.Forms.ProgressBar PerseptronProgressBar;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label NumberNameLabel;
+        private System.Windows.Forms.ToolStripMenuItem openCollectionImageToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem learningPerseptronToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem lambdaToolStripMenuItem;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.RadioButton WithoutAanswerRadioButton;
+        private System.Windows.Forms.RadioButton FromAnswerRadioButton;
     }
 }

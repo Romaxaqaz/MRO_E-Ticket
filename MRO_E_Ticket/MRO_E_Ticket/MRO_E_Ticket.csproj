@@ -63,6 +63,12 @@
     <Compile Include="ImageViewer.Designer.cs">
       <DependentUpon>ImageViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="LambdaArray.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LambdaArray.Designer.cs">
+      <DependentUpon>LambdaArray.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,6 +83,12 @@
     </Compile>
     <Compile Include="Model\ImageCollection.cs" />
     <Compile Include="Model\ParametersForGistogram.cs" />
+    <Compile Include="NeighborForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NeighborForm.Designer.cs">
+      <DependentUpon>NeighborForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PerceptronViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,14 +105,26 @@
       <DependentUpon>SkeletonizationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="SkeletonizationImageLTRB.cs" />
+    <Compile Include="TableForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TableForm.Designer.cs">
+      <DependentUpon>TableForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="ImageViewer.resx">
       <DependentUpon>ImageViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LambdaArray.resx">
+      <DependentUpon>LambdaArray.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Histogramm.resx">
       <DependentUpon>Histogramm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NeighborForm.resx">
+      <DependentUpon>NeighborForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PerceptronViewer.resx">
       <DependentUpon>PerceptronViewer.cs</DependentUpon>
@@ -118,6 +142,10 @@
     <EmbeddedResource Include="SkeletonizationForm.resx">
       <DependentUpon>SkeletonizationForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TableForm.resx">
+      <DependentUpon>TableForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -133,9 +161,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Perceptron\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ClassLibrary1\PerceptronLib.csproj">
       <Project>{8ef78a63-62db-402e-b03f-21612ee71657}</Project>
@@ -144,6 +170,10 @@
     <ProjectReference Include="..\HtmlGenerators\HtmlGeneratorsLib.csproj">
       <Project>{a19af5e7-fb92-4a98-8d10-ec5250298f8e}</Project>
       <Name>HtmlGeneratorsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NearestNeighbor\NearestNeighbor.csproj">
+      <Project>{f9240a6f-4871-4710-a9bc-cb1bf1a93bb0}</Project>
+      <Name>NearestNeighbor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

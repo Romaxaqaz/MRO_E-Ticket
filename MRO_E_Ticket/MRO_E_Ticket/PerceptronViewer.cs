@@ -13,11 +13,14 @@ namespace MRO_E_Ticket
     {
         private readonly string PathObjectSerializer = "PerceptronObject.bin";
         private Perceptron per;
+        private LambdaArray lform = new LambdaArray();
+        private bool formOpen = true;
         private string[] AllFiles;
 
         public PerceptronViewer()
         {
             InitializeComponent();
+            lform.FormClosing += Lform_FormClosing;
             ObjectSerializer<Perceptron> objSerializer = new ObjectSerializer<Perceptron>();
             Perceptron yourObjectFromFile = objSerializer.GetSerializedObject(PathObjectSerializer);
             if (yourObjectFromFile != null)
@@ -26,9 +29,18 @@ namespace MRO_E_Ticket
             }
             else
             {
-                per = new Perceptron(2500, 1500);
+                per = new Perceptron(6400, 3200);
             }
             Load += PerceptronViewer_Load;
+        }
+
+        private void Lform_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                lform.Hide();
+            }
         }
 
         private void PerceptronViewer_Load(object sender, EventArgs e)
@@ -71,7 +83,18 @@ namespace MRO_E_Ticket
         {
             foreach (ListViewItem item in listViewImageCollection.SelectedItems)
             {
-                NumberNameLabel.Text = per.InputsImageForPerseptron(item.Text);
+                if (WithoutAanswerRadioButton.Checked)
+                {
+                    FromAnswerRadioButton.Checked = false;
+                    formOpen = true;
+                    NumberNameLabel.Text = per.InputsImageForPerseptron(item.Text);
+                }
+                if(FromAnswerRadioButton.Checked)
+                {
+                    WithoutAanswerRadioButton.Checked = false;
+                    formOpen = false;
+                    NumberNameLabel.Text = per.InputsImageForPerseptronFromAnswer(item.Text);
+                }
             }
         }
 
@@ -86,12 +109,63 @@ namespace MRO_E_Ticket
                 PerseptronProgressBar.Value = counter++;
             }
             per.EndLearning();
-            ObjectSerializer<Perceptron> objSerializer = new ObjectSerializer<Perceptron>();
-            objSerializer.SaveSerializedObject(per, PathObjectSerializer);
+            SavePerceptron();
             PerseptronProgressBar.Value = 0;
-            PerseptronStatusLabel.Text = "Learning";
-          
+            PerseptronStatusLabel.Text = "Learning"; 
         }
 
+        private void lambdaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            per.CombineArrays();
+            PerseptronProgressBar.Maximum = AllFiles.Length;
+            int counter = 0;
+            foreach (string file in AllFiles)
+            {
+                var name = per.InputsImageForPerseptronFromAnswer(file);
+                if (file.Contains(name.ToLower()) != true)
+                {
+                    string newFilePath = Path.GetFileName(file);
+                    per.LearningPerseptronFromAnswer(file, newFilePath);
+                }
+            }
+            SavePerceptron();
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            if (formOpen)
+            {
+                lform.SetText(per.dictionaryLambdaElement, "Withoutn answer");
+                lform.ShowArray();
+                lform.Show();
+            }
+            else
+            {
+                lform.SetText(per.dictionaryLambdaElementAnswer, "From answer");
+                lform.ShowArray();
+                lform.Show();
+            }
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            formOpen = false;
+        }
+
+        private void WithoutAanswerRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            formOpen = true;
+        }
+
+        private void SavePerceptron()
+        {
+            ObjectSerializer<Perceptron> objSerializer = new ObjectSerializer<Perceptron>();
+            objSerializer.SaveSerializedObject(per, PathObjectSerializer);
+        }
     }
 }

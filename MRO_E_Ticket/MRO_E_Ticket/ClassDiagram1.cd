@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="MRO_E_Ticket.Program">
+    <Position X="5.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.Segmentation">
+    <Position X="7.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAABEAAAAAAAAEBAAgAIAAAAAEAOIAAAIAAAAAAioAA=</HashCode>
+      <FileName>Segmentation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.BitmapLib.FastBitmap">
+    <Position X="0.5" Y="0.75" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="MRO_E_Ticket.BitmapLib.FastBitmap.PixelData" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>BitmapLib\FastBitmap.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AASBABAAAAAAiAAAQAAAAAAAIAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>BitmapLib\FastBitmap.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.Domain.ExpansionAndErosion">
+    <Position X="2.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAEQCAAAAAAAAAAAAAgAAAAAIAAAAACAAAAAgAA=</HashCode>
+      <FileName>Domain\ExpansionAndErosion.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.Domain.ImageConverter">
+    <Position X="4" Y="0.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="MRO_E_Ticket.Domain.ImageConverter.dlgProgress" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Domain\ImageConverter.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAgRAQBAAQAAQQAAgIAIAEAFJ4BAAAGAgAAABACCAAA=</HashCode>
+      <FileName>Domain\ImageConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.Domain.RotateBitmapImage">
+    <Position X="5.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\RotateBitmapImage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.Domain.TransformationForTheHistogram">
+    <Position X="5.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAABAAAIAAAAAAAAA=</HashCode>
+      <FileName>Domain\TransformationForTheHistogram.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.Model.ImageCollection">
+    <Position X="0.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\ImageCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.Model.ParametersForGistogram">
+    <Position X="8.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAgACAQAAAgAAAAAAAAAAAAAAIAAAACAAAA=</HashCode>
+      <FileName>Model\ParametersForGistogram.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.SkeletonizationImageLTRB">
+    <Position X="2.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAgAAIAAAAgAAAAAAAAAAAAIAAAAAAAAAgAAAA=</HashCode>
+      <FileName>SkeletonizationImageLTRB.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.Histogramm">
+    <Position X="0.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAkAAAAAACAAAAAAAACAAAACAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Histogramm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.ImageViewer">
+    <Position X="2.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAACAAAACAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>ImageViewer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.MainForm">
+    <Position X="4" Y="7" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>g4gDIAhUADAAABSBFgiAYwAKSmDcLQACiWCABABHFAA=</HashCode>
+      <FileName>MainForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.NotifyMessage" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAACAAAAgABAAAAAUAAAAAAAAAA=</HashCode>
+      <FileName>MainForm.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MRO_E_Ticket.PerceptronViewer">
+    <Position X="2.25" Y="9.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AwAABAAAACCAAhAAAAiAAAhCCgCACAAAEWAAAAAAAAA=</HashCode>
+      <FileName>PerceptronViewer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MRO_E_Ticket.SkeletonizationForm">
+    <Position X="5.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAgBAAAACAYAACAAAIAAAAAEAAAABAAAI=</HashCode>
+      <FileName>SkeletonizationForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PerceptronLib.Concrete.Addressable">
+    <Position X="11" Y="2.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ClassLibrary1.Concrete.NumberParameters">
+    <Position X="12.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PerceptronLib.Model.Sensors">
+    <Position X="12.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PerceptronLib.PerceptronArray">
+    <Position X="11" Y="5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ClassLibrary1.Serializer.ObjectSerializer&lt;T&gt;">
+    <Position X="12.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PerceptronLib.ConvertImageToSensorList">
+    <Position X="11" Y="7" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PerceptronLib.Perceptron" Collapsed="true">
+    <Position X="12.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Enum Name="MRO_E_Ticket.Enum.BinarizationColorPixel">
+    <Position X="5.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Enum\BinarizationColorPixel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

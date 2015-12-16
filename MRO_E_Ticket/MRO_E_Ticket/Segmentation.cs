@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MRO_E_Ticket.Model;
 using MRO_E_Ticket.Enum;
 using MRO_E_Ticket.Domain;
-using System.Drawing;
+using System.Windows.Forms;
 
 namespace MRO_E_Ticket
 {
@@ -16,7 +13,7 @@ namespace MRO_E_Ticket
         private TransformationForTheHistogram transform = new TransformationForTheHistogram();
         private List<ParametersForGistogram> full = new List<ParametersForGistogram>();
         private List<ParametersForGistogram> parametersList = new List<ParametersForGistogram>();
-        private readonly int SizeNumberImage = 50;
+        private readonly int SizeNumberImage = 80;
         private int[,] imageArray;
 
         public Segmentation(int[,] array, List<ParametersForGistogram> list)
@@ -29,9 +26,11 @@ namespace MRO_E_Ticket
         {
             //max sum black pixel
             int maxCountBlackPixel = list.Max(x => x.TheТumberOfPixels);
-            //
-            //IF maxCount==arrayWidt => maxCount/2
-            //
+             if(maxCountBlackPixel< 1000)
+            {
+                maxCountBlackPixel = 1000;
+            }
+            
             //limit height histogram
             int LimitsImageHeigth = parametersList.Count / 2;
             int paramsForRemovingUp = IndexMaxValueHistogram(parametersList, maxCountBlackPixel, LimitsImageHeigth);
@@ -121,11 +120,19 @@ namespace MRO_E_Ticket
             return bufferArray;
         }
         //remove informations lines (horizontal) and remove border
-        public int[,] SelectionOfAreasInHorizontalImage(List<ParametersForGistogram> list, int[,] array)
+        public int[,] SelectionOfAreasInHorizontalImage(List<ParametersForGistogram> list, int[,] array, int border=4)
         {
             full = ReturnParamsList(list);
-            int border = 4;
-            var arrayWidth = full.Max(x => x.WidthPixels);
+            int arrayWidth = 0;
+            try
+            {
+               arrayWidth = full.Max(x => x.WidthPixels);
+            }
+            catch(System.InvalidOperationException)
+            {
+                MessageBox.Show("Что-то не так. Попробуйте изменить порог бинаризации");
+                return null;
+            }
             int[,] bufferArray = new int[arrayWidth - (border * 2) + 1, array.GetLength(1) - (border * 2)];
 
             foreach (var item in full)
@@ -168,7 +175,7 @@ namespace MRO_E_Ticket
             {
                 bufferArray = null;
                 //check only the black band
-                if (item.WidthPixels != 0)
+                if (item.WidthPixels > 0)
                 {
                     imageConverter = new MRO_E_Ticket.Domain.ImageConverter();
                     int jOne = item.StartPositionPixel;
@@ -246,7 +253,7 @@ namespace MRO_E_Ticket
             return arrayInput;
         }
         //extension array
-        public int[,] ExtensionMatrix(int[,] miniArray, int Size = 50)
+        public int[,] ExtensionMatrix(int[,] miniArray, int Size = 80)
         {
             int[,] maxArray = new int[Size, Size];
             //required matrix size

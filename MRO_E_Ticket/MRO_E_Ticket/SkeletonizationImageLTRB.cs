@@ -154,7 +154,6 @@ namespace MRO_E_Ticket
                 return false;
             return true;
         }
-
         private bool Syna(Bitmap bmp, int j, int i)
         {
             List<byte> syna = new List<byte>();

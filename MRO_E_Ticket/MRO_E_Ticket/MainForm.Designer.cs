@@ -34,8 +34,11 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.OpenImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.бинаризацияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MethodBinarizationtoolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.perceptronToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.skeletizationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nearestNeighborToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.TransferToGrayscaleTabPage = new System.Windows.Forms.TabPage();
@@ -66,9 +69,17 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.SceletizationCheckBox1 = new System.Windows.Forms.CheckBox();
+            this.button4 = new System.Windows.Forms.Button();
             this.DividedimageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.NotifyLable = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.PerceptronFromAnswer = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.NeighbLable = new System.Windows.Forms.Label();
+            this.ResultLable = new System.Windows.Forms.Label();
+            this.RecongnizeButton = new System.Windows.Forms.Button();
+            this.LambdaArrayFromAnswer = new System.Windows.Forms.Button();
+            this.ResultPerceptronFromAAnswer = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.OriginalPictureBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -83,6 +94,7 @@
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // OriginalPictureBox
@@ -93,7 +105,7 @@
             this.OriginalPictureBox.BackColor = System.Drawing.Color.Transparent;
             this.OriginalPictureBox.Location = new System.Drawing.Point(0, 0);
             this.OriginalPictureBox.Name = "OriginalPictureBox";
-            this.OriginalPictureBox.Size = new System.Drawing.Size(368, 508);
+            this.OriginalPictureBox.Size = new System.Drawing.Size(368, 587);
             this.OriginalPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.OriginalPictureBox.TabIndex = 1;
             this.OriginalPictureBox.TabStop = false;
@@ -106,7 +118,8 @@
             this.OpenImageToolStripMenuItem,
             this.бинаризацияToolStripMenuItem,
             this.perceptronToolStripMenuItem,
-            this.skeletizationToolStripMenuItem});
+            this.skeletizationToolStripMenuItem,
+            this.nearestNeighborToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(756, 29);
@@ -125,11 +138,32 @@
             // 
             // бинаризацияToolStripMenuItem
             // 
+            this.бинаризацияToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MethodBinarizationtoolStripComboBox1,
+            this.toolStripTextBox1});
             this.бинаризацияToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.бинаризацияToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("бинаризацияToolStripMenuItem.Image")));
             this.бинаризацияToolStripMenuItem.Name = "бинаризацияToolStripMenuItem";
             this.бинаризацияToolStripMenuItem.Size = new System.Drawing.Size(120, 25);
             this.бинаризацияToolStripMenuItem.Text = "Binarization";
+            // 
+            // MethodBinarizationtoolStripComboBox1
+            // 
+            this.MethodBinarizationtoolStripComboBox1.Items.AddRange(new object[] {
+            "Метод 120",
+            "Пороговый метод"});
+            this.MethodBinarizationtoolStripComboBox1.Name = "MethodBinarizationtoolStripComboBox1";
+            this.MethodBinarizationtoolStripComboBox1.Size = new System.Drawing.Size(121, 23);
+            this.MethodBinarizationtoolStripComboBox1.Tag = "";
+            this.MethodBinarizationtoolStripComboBox1.Text = "Метод бинаризации";
+            this.MethodBinarizationtoolStripComboBox1.SelectedIndexChanged += new System.EventHandler(this.MethodBinarizationtoolStripComboBox1_SelectedIndexChanged);
+            // 
+            // toolStripTextBox1
+            // 
+            this.toolStripTextBox1.Enabled = false;
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
+            this.toolStripTextBox1.Text = "введите порог";
             // 
             // perceptronToolStripMenuItem
             // 
@@ -149,6 +183,14 @@
             this.skeletizationToolStripMenuItem.Text = "Skeletization";
             this.skeletizationToolStripMenuItem.Click += new System.EventHandler(this.skeletizationToolStripMenuItem_Click);
             // 
+            // nearestNeighborToolStripMenuItem
+            // 
+            this.nearestNeighborToolStripMenuItem.ForeColor = System.Drawing.SystemColors.Control;
+            this.nearestNeighborToolStripMenuItem.Name = "nearestNeighborToolStripMenuItem";
+            this.nearestNeighborToolStripMenuItem.Size = new System.Drawing.Size(146, 25);
+            this.nearestNeighborToolStripMenuItem.Text = "Nearest Neighbor";
+            this.nearestNeighborToolStripMenuItem.Click += new System.EventHandler(this.nearestNeighborToolStripMenuItem_Click);
+            // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
@@ -158,7 +200,7 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 32);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(376, 529);
+            this.tabControl1.Size = new System.Drawing.Size(376, 608);
             this.tabControl1.TabIndex = 3;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -169,7 +211,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(368, 503);
+            this.tabPage1.Size = new System.Drawing.Size(368, 582);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Original Image";
             // 
@@ -180,7 +222,7 @@
             this.TransferToGrayscaleTabPage.Location = new System.Drawing.Point(4, 22);
             this.TransferToGrayscaleTabPage.Name = "TransferToGrayscaleTabPage";
             this.TransferToGrayscaleTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.TransferToGrayscaleTabPage.Size = new System.Drawing.Size(368, 503);
+            this.TransferToGrayscaleTabPage.Size = new System.Drawing.Size(368, 582);
             this.TransferToGrayscaleTabPage.TabIndex = 1;
             this.TransferToGrayscaleTabPage.Text = "Grayscale";
             this.TransferToGrayscaleTabPage.UseVisualStyleBackColor = true;
@@ -189,7 +231,7 @@
             // GrayScaleLinkLabel
             // 
             this.GrayScaleLinkLabel.AutoSize = true;
-            this.GrayScaleLinkLabel.Location = new System.Drawing.Point(278, 485);
+            this.GrayScaleLinkLabel.Location = new System.Drawing.Point(278, 566);
             this.GrayScaleLinkLabel.Name = "GrayScaleLinkLabel";
             this.GrayScaleLinkLabel.Size = new System.Drawing.Size(84, 13);
             this.GrayScaleLinkLabel.TabIndex = 1;
@@ -199,9 +241,12 @@
             // 
             // GrayScalePictureBox
             // 
+            this.GrayScalePictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.GrayScalePictureBox.Location = new System.Drawing.Point(0, 0);
             this.GrayScalePictureBox.Name = "GrayScalePictureBox";
-            this.GrayScalePictureBox.Size = new System.Drawing.Size(368, 536);
+            this.GrayScalePictureBox.Size = new System.Drawing.Size(368, 582);
             this.GrayScalePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.GrayScalePictureBox.TabIndex = 0;
             this.GrayScalePictureBox.TabStop = false;
@@ -213,7 +258,7 @@
             this.BinarizationTabPage.Controls.Add(this.BinarizationPictureBox);
             this.BinarizationTabPage.Location = new System.Drawing.Point(4, 22);
             this.BinarizationTabPage.Name = "BinarizationTabPage";
-            this.BinarizationTabPage.Size = new System.Drawing.Size(368, 503);
+            this.BinarizationTabPage.Size = new System.Drawing.Size(368, 582);
             this.BinarizationTabPage.TabIndex = 2;
             this.BinarizationTabPage.Text = "Binarization";
             this.BinarizationTabPage.UseVisualStyleBackColor = true;
@@ -222,7 +267,7 @@
             // HistogrammlinkLabel
             // 
             this.HistogrammlinkLabel.AutoSize = true;
-            this.HistogrammlinkLabel.Location = new System.Drawing.Point(3, 488);
+            this.HistogrammlinkLabel.Location = new System.Drawing.Point(3, 569);
             this.HistogrammlinkLabel.Name = "HistogrammlinkLabel";
             this.HistogrammlinkLabel.Size = new System.Drawing.Size(92, 13);
             this.HistogrammlinkLabel.TabIndex = 2;
@@ -233,7 +278,7 @@
             // BinarizationImagelinkLabel
             // 
             this.BinarizationImagelinkLabel.AutoSize = true;
-            this.BinarizationImagelinkLabel.Location = new System.Drawing.Point(244, 488);
+            this.BinarizationImagelinkLabel.Location = new System.Drawing.Point(244, 569);
             this.BinarizationImagelinkLabel.Name = "BinarizationImagelinkLabel";
             this.BinarizationImagelinkLabel.Size = new System.Drawing.Size(121, 13);
             this.BinarizationImagelinkLabel.TabIndex = 1;
@@ -248,7 +293,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.BinarizationPictureBox.Location = new System.Drawing.Point(0, 0);
             this.BinarizationPictureBox.Name = "BinarizationPictureBox";
-            this.BinarizationPictureBox.Size = new System.Drawing.Size(368, 565);
+            this.BinarizationPictureBox.Size = new System.Drawing.Size(368, 582);
             this.BinarizationPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.BinarizationPictureBox.TabIndex = 0;
             this.BinarizationPictureBox.TabStop = false;
@@ -283,7 +328,7 @@
             // 
             this.progressBar1.AccessibleRole = System.Windows.Forms.AccessibleRole.Cursor;
             this.progressBar1.BackColor = System.Drawing.Color.DodgerBlue;
-            this.progressBar1.Location = new System.Drawing.Point(12, 580);
+            this.progressBar1.Location = new System.Drawing.Point(8, 659);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(376, 23);
             this.progressBar1.TabIndex = 6;
@@ -293,7 +338,7 @@
             this.ProgressName.AutoSize = true;
             this.ProgressName.BackColor = System.Drawing.Color.Transparent;
             this.ProgressName.ForeColor = System.Drawing.Color.White;
-            this.ProgressName.Location = new System.Drawing.Point(13, 564);
+            this.ProgressName.Location = new System.Drawing.Point(9, 643);
             this.ProgressName.Name = "ProgressName";
             this.ProgressName.Size = new System.Drawing.Size(45, 13);
             this.ProgressName.TabIndex = 7;
@@ -331,6 +376,7 @@
             // 
             // DividedIntoImageButton
             // 
+            this.DividedIntoImageButton.Enabled = false;
             this.DividedIntoImageButton.Location = new System.Drawing.Point(6, 105);
             this.DividedIntoImageButton.Name = "DividedIntoImageButton";
             this.DividedIntoImageButton.Size = new System.Drawing.Size(334, 23);
@@ -391,7 +437,7 @@
             // 
             this.button2.Location = new System.Drawing.Point(95, 19);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(95, 40);
+            this.button2.Size = new System.Drawing.Size(95, 64);
             this.button2.TabIndex = 17;
             this.button2.Text = "create modify image";
             this.button2.UseVisualStyleBackColor = true;
@@ -453,15 +499,36 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.SceletizationCheckBox1);
             this.groupBox3.Controls.Add(this.button2);
             this.groupBox3.Controls.Add(this.ExpansionCheckBox);
             this.groupBox3.Controls.Add(this.ErosionCheckBox);
             this.groupBox3.Location = new System.Drawing.Point(398, 364);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(346, 68);
+            this.groupBox3.Size = new System.Drawing.Size(346, 91);
             this.groupBox3.TabIndex = 21;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Expansion & Erosion";
+            // 
+            // SceletizationCheckBox1
+            // 
+            this.SceletizationCheckBox1.AutoSize = true;
+            this.SceletizationCheckBox1.Location = new System.Drawing.Point(9, 66);
+            this.SceletizationCheckBox1.Name = "SceletizationCheckBox1";
+            this.SceletizationCheckBox1.Size = new System.Drawing.Size(86, 17);
+            this.SceletizationCheckBox1.TabIndex = 18;
+            this.SceletizationCheckBox1.Text = "Sceletization";
+            this.SceletizationCheckBox1.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(95, 26);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(23, 37);
+            this.button4.TabIndex = 5;
+            this.button4.Text = "λ\r\n";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // DividedimageList1
             // 
@@ -469,39 +536,102 @@
             this.DividedimageList1.ImageSize = new System.Drawing.Size(16, 16);
             this.DividedimageList1.TransparentColor = System.Drawing.Color.Transparent;
             // 
-            // NotifyLable
+            // groupBox4
             // 
-            this.NotifyLable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.NotifyLable.AutoSize = true;
-            this.NotifyLable.BackColor = System.Drawing.Color.Transparent;
-            this.NotifyLable.Location = new System.Drawing.Point(594, 9);
-            this.NotifyLable.Name = "NotifyLable";
-            this.NotifyLable.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.NotifyLable.Size = new System.Drawing.Size(35, 13);
-            this.NotifyLable.TabIndex = 22;
-            this.NotifyLable.Text = "label5";
-            this.NotifyLable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.groupBox4.Controls.Add(this.ResultPerceptronFromAAnswer);
+            this.groupBox4.Controls.Add(this.LambdaArrayFromAnswer);
+            this.groupBox4.Controls.Add(this.PerceptronFromAnswer);
+            this.groupBox4.Controls.Add(this.button3);
+            this.groupBox4.Controls.Add(this.button4);
+            this.groupBox4.Controls.Add(this.NeighbLable);
+            this.groupBox4.Controls.Add(this.ResultLable);
+            this.groupBox4.Controls.Add(this.RecongnizeButton);
+            this.groupBox4.Location = new System.Drawing.Point(398, 461);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(346, 221);
+            this.groupBox4.TabIndex = 24;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Recondition";
             // 
-            // label5
+            // PerceptronFromAnswer
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(490, 7);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(98, 17);
-            this.label5.TabIndex = 23;
-            this.label5.Text = "last operation:";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.PerceptronFromAnswer.Location = new System.Drawing.Point(5, 69);
+            this.PerceptronFromAnswer.Name = "PerceptronFromAnswer";
+            this.PerceptronFromAnswer.Size = new System.Drawing.Size(92, 50);
+            this.PerceptronFromAnswer.TabIndex = 7;
+            this.PerceptronFromAnswer.Text = "Recognize perceptrom from answer";
+            this.PerceptronFromAnswer.UseVisualStyleBackColor = true;
+            this.PerceptronFromAnswer.Click += new System.EventHandler(this.PerceptronFromAnswer_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(5, 140);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(112, 35);
+            this.button3.TabIndex = 4;
+            this.button3.Text = "Recognize Neiggbor";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // NeighbLable
+            // 
+            this.NeighbLable.AutoSize = true;
+            this.NeighbLable.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.NeighbLable.Location = new System.Drawing.Point(123, 142);
+            this.NeighbLable.Name = "NeighbLable";
+            this.NeighbLable.Size = new System.Drawing.Size(65, 26);
+            this.NeighbLable.TabIndex = 3;
+            this.NeighbLable.Text = "result";
+            // 
+            // ResultLable
+            // 
+            this.ResultLable.AutoSize = true;
+            this.ResultLable.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.ResultLable.Location = new System.Drawing.Point(124, 29);
+            this.ResultLable.Name = "ResultLable";
+            this.ResultLable.Size = new System.Drawing.Size(65, 26);
+            this.ResultLable.TabIndex = 2;
+            this.ResultLable.Text = "result";
+            // 
+            // RecongnizeButton
+            // 
+            this.RecongnizeButton.Location = new System.Drawing.Point(5, 26);
+            this.RecongnizeButton.Name = "RecongnizeButton";
+            this.RecongnizeButton.Size = new System.Drawing.Size(95, 37);
+            this.RecongnizeButton.TabIndex = 0;
+            this.RecongnizeButton.Text = "Recognize perceptron";
+            this.RecongnizeButton.UseVisualStyleBackColor = true;
+            this.RecongnizeButton.Click += new System.EventHandler(this.RecongnizeButton_Click);
+            // 
+            // LambdaArrayFromAnswer
+            // 
+            this.LambdaArrayFromAnswer.Location = new System.Drawing.Point(94, 69);
+            this.LambdaArrayFromAnswer.Name = "LambdaArrayFromAnswer";
+            this.LambdaArrayFromAnswer.Size = new System.Drawing.Size(23, 50);
+            this.LambdaArrayFromAnswer.TabIndex = 8;
+            this.LambdaArrayFromAnswer.Text = "λ";
+            this.LambdaArrayFromAnswer.UseVisualStyleBackColor = true;
+            this.LambdaArrayFromAnswer.Click += new System.EventHandler(this.LambdaArrayFromAnswer_Click);
+            // 
+            // ResultPerceptronFromAAnswer
+            // 
+            this.ResultPerceptronFromAAnswer.AutoSize = true;
+            this.ResultPerceptronFromAAnswer.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.ResultPerceptronFromAAnswer.Location = new System.Drawing.Point(125, 79);
+            this.ResultPerceptronFromAAnswer.Name = "ResultPerceptronFromAAnswer";
+            this.ResultPerceptronFromAAnswer.Size = new System.Drawing.Size(65, 26);
+            this.ResultPerceptronFromAAnswer.TabIndex = 9;
+            this.ResultPerceptronFromAAnswer.Text = "result";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.MediumSpringGreen;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(756, 615);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.NotifyLable);
+            this.ClientSize = new System.Drawing.Size(756, 708);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -537,6 +667,8 @@
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -580,8 +712,19 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.ImageList DividedimageList1;
         private System.Windows.Forms.ListView DividedListView;
-        private System.Windows.Forms.Label NotifyLable;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox SceletizationCheckBox1;
+        private System.Windows.Forms.ToolStripComboBox MethodBinarizationtoolStripComboBox1;
+        private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label ResultLable;
+        private System.Windows.Forms.Button RecongnizeButton;
+        private System.Windows.Forms.ToolStripMenuItem nearestNeighborToolStripMenuItem;
+        private System.Windows.Forms.Label NeighbLable;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button PerceptronFromAnswer;
+        private System.Windows.Forms.Button LambdaArrayFromAnswer;
+        private System.Windows.Forms.Label ResultPerceptronFromAAnswer;
     }
 }
 

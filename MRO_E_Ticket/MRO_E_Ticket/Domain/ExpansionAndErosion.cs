@@ -1,6 +1,7 @@
 ﻿using MRO_E_Ticket.Model;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -133,6 +134,14 @@ namespace MRO_E_Ticket.Domain
                 resultImageList.Add(new ImageCollection(numberName.ToString() + nameImage, imageConverter.CreateBitmap(erosionArray)));
             }
             return resultImageList;
+        }
+
+        public static Bitmap GetResultImageAfterErosion(Bitmap numbetImageList)
+        {
+            var array = imageConverter.GetImageArray(numbetImageList);
+            var erosionArray = segmentation.ExtensionMatrix(Erosion(Mask, array));
+            var image = imageConverter.CreateBitmap(erosionArray);
+            return image;
         }
     }
 }

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using MRO_E_Ticket.Enum;
 using MRO_E_Ticket.BitmapLib;
 using MRO_E_Ticket.Model;
+using System.Drawing.Imaging;
+using System.Windows.Forms;
 
 namespace MRO_E_Ticket.Domain
 {
@@ -21,7 +23,7 @@ namespace MRO_E_Ticket.Domain
         private TransformationForTheHistogram transformation = new TransformationForTheHistogram();
         private readonly string TransferToGrayscaleProvess = "Transfer To Grayscale Image";
         private readonly string BinarizationThresholdMethod = "Binarization Image";
-        private int binarizationThreshold = 120;
+        private int binarizationThreshold = 160;
         private int HeigthBarcode = 110;
 
         public int BinarizationThreshold { get { return binarizationThreshold; } set { binarizationThreshold = value; } }
@@ -132,7 +134,7 @@ namespace MRO_E_Ticket.Domain
         private byte ResultPixelColorAfterBinarization(int R)
         {
             byte resultColor = 0;
-            if (R <= 120)
+            if (R <= binarizationThreshold)
             {
                 resultColor = (byte)BinarizationColorPixel.Black;
             }
@@ -164,6 +166,7 @@ namespace MRO_E_Ticket.Domain
                 }
             }
             fastBitmap.UnlockImage();
+
             return halfBitmap;
         }
         //create gray image
@@ -231,8 +234,8 @@ namespace MRO_E_Ticket.Domain
         public double GetAngleImage(Bitmap bmp)
         {
             List<ParametersForGistogram> paramsList = new List<ParametersForGistogram>();
-            int topDelete = 500;
-            int buttomDelete = 0;
+            int topDelete = 0;
+            int buttomDelete = bmp.Height / 2;
             int startBarcode = 0;
             int endBarcode = 0;
             int widthFirstLines = 0;
@@ -249,8 +252,10 @@ namespace MRO_E_Ticket.Domain
             }
             var CountPixelinEachRowList = transformation.Parameters(newImageArray);
             var paramsSegmentList = segment.ReturnParamsList(CountPixelinEachRowList);
+
             //search barcode
             var maxWidth = paramsSegmentList.Max(x => x.WidthPixels);
+
             //set start and end position barcode
             foreach (var item in paramsSegmentList)
             {
@@ -260,56 +265,137 @@ namespace MRO_E_Ticket.Domain
                     endBarcode = item.EndPositionPixel + topDelete;
                 }
             }
-            //get position first black pixel
-            var PositionTheFerstBlackPixel = GetTheFirstBlackPosition(imageArray, startBarcode);
-            int arrayIstart = PositionTheFerstBlackPixel[0];
-            int arrayJstart = PositionTheFerstBlackPixel[1];
-            
-
-            int oneCounter = arrayIstart;
-            int startPixelPosition = 0;
-            int endPixelPosition = 0;
-            int lineCounter = arrayIstart;
-            startPixelPosition = arrayIstart;
-
-            //get with first line barcode
-            while (imageArray[lineCounter, arrayJstart - 1] == 0)
+            int[,] newImageArrayNEW = new int[imageArray.GetLength(0), maxWidth];
+            for (int i = 0; i < imageArray.GetLength(0); i++)
             {
-                lineCounter++;
-                widthFirstLines++;
-            }
-            endPixelPosition = widthFirstLines - 1;
-
-            int leftRotate = GetCounVerticlaBlackPixel(imageArray, arrayIstart, arrayJstart);
-            int rightRotate = GetCounVerticlaBlackPixel(imageArray, arrayIstart + endPixelPosition, arrayJstart);
-            double angle = 0;
-            //if greater leftRotate, the inclination to the left and vice versa
-            if (rightRotate > leftRotate)
-            {
-                //если справа белый пиксель, то пока не черный считаем
-                double bufferLeft2 = GeRightDistanceToThePexel(imageArray, arrayIstart, arrayJstart);
-                if (bufferLeft2 <= 0)
+                for (int j = startBarcode; j < endBarcode; j++)
                 {
-                    bufferLeft2 = 1.5;
+                    newImageArrayNEW[i, j - startBarcode] = imageArray[i, j];
                 }
-                angle = (Math.Atan(HeigthBarcode / bufferLeft2) * (180 / Math.PI)) - 90;
-            }
-            else
-            {
-                double bufferLeft3 = GeLeftDistanceToThePexel(imageArray, (arrayIstart + endPixelPosition) - 1, arrayJstart);
-                if (bufferLeft3 <= 0)
-                {
-                    bufferLeft3 = 1.5;
-                }
-                angle = 90 - (Math.Atan(HeigthBarcode / bufferLeft3) * (180 / Math.PI));
-                if (bufferLeft3 == 1)
-                {
-                    angle = 0;
-                }
-
             }
 
+            var paramsForHistogrammNewImage = transformation.HorizontalImageGetParameters(newImageArrayNEW);
+            var miniArray = segment.SelectionOfAreasInHorizontalImage(paramsForHistogrammNewImage, newImageArrayNEW, 0);
+
+            ImageFormat format = ImageFormat.Bmp;
+            var bit = CreateBitmap(miniArray);
+
+            bit.Save("test2" + ".bmp", format);
+
+            int startJ = StartJPosition(miniArray);
+            startJ = startJ - 1;
+            bool minus = false;
+
+            //
+            int height = 0;
+            for (int i = 3; i < miniArray.GetLength(0); i++)
+            {
+                if (startJ > 0)
+                {
+                    if (miniArray[i, startJ] == 1 && miniArray[i + 1, startJ] == 0)
+                    {
+                        height++;
+                        startJ--;
+                    }
+                }
+            }
+            if (height < 1)
+            {
+                height = 0;
+                if (startJ < 0) { startJ = 0; }
+                for (int i = 0; i < miniArray.GetLength(0); i++)
+                {
+                    if (miniArray[i, startJ] == 1 && miniArray[i + 1, startJ] == 1)
+                    {
+                        if (miniArray[i, startJ + 1] == 0)
+                        {
+                            height++;
+                            startJ++;
+                        }
+                    }
+                }
+                minus = true;
+            }
+            var angle = 90 - (Math.Atan(miniArray.GetLength(0) / Math.Abs(height + 3)) * (180 / Math.PI));
+            if(angle > 3) { angle = 0; MessageBox.Show("Что-то не так. Попробуйте увеличить порог бинаризации."); }
+            if(minus)
+            {
+                angle = angle * -1;
+            }
             return angle;
+        }
+
+
+        private int StartJPosition(int[,] array)
+        {
+            int startJ = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    if (array[i, j] == 0)
+                    {
+                        startJ = j;
+                        break;
+                    }
+                }
+            }
+            return startJ;
+        }
+
+        private int StartUpPixels(int[,] imageArray, int startJposition)
+        {
+            int x = 0;
+            for (int i = 0; i < imageArray.GetLength(0) / 2; i++)
+            {
+                if (imageArray[i, startJposition + 2] == 0)
+                {
+                    x = i;
+                    break;
+                }
+            }
+            return x;
+        }
+
+        private int[] GetTheFirstBlackPosition2(int[,] array, int jStartBarCode, int jEndBarCode)
+        {
+            int[] resultPosition = new int[2];
+            int oldI = array.GetLength(0) - 1;
+            int oldJ = array.GetLength(1) - 1;
+            int counterRepeatI = 0;
+            bool counterRepeat = true;
+            //If a very large steering angle
+
+            //going from top to bottom and and 
+            //if the value is less than it was before, the reserve position
+            for (int j = jStartBarCode; j < jEndBarCode; j++)
+            {
+                for (int i = 0; i < 200; i++)
+                {
+                    if (array[i, j] == 0)
+                    {
+                        if (i < oldI && counterRepeat)
+                        {
+                            oldI = i;
+                            oldJ = j;
+                            counterRepeatI = 0;
+                            break;
+                        }
+                        if (i == oldI)
+                        {
+                            counterRepeatI++;
+                        }
+                        if (counterRepeatI > 5)
+                        {
+                            counterRepeat = false;
+                        }
+                    }
+                }
+            }
+            // +1 to allow a black pixel
+            resultPosition[0] = oldI;
+            resultPosition[1] = oldJ + 1;
+            return resultPosition;
         }
 
         private int GeRightDistanceToThePexel(int[,] imageArray, int startFirstPixelX, int startPixelY, int maxHeigthBarCode = 105)
@@ -375,7 +461,7 @@ namespace MRO_E_Ticket.Domain
             return counterPixelDistance;
         }
 
-        private int[] GetTheFirstBlackPosition(int[,] array, int jPos)
+        private int[] GetTheFirstBlackPosition(int[,] array, int jStartBarCode, int jEndBarCode)
         {
             int[] resultPosition = new int[2];
             int oldI = array.GetLength(0) - 1;
@@ -383,12 +469,12 @@ namespace MRO_E_Ticket.Domain
             int counterRepeatI = 0;
             bool counterRepeat = true;
             //If a very large steering angle
-            if (jPos < 1600) { jPos += 200; }
+
             //going from top to bottom and and 
             //if the value is less than it was before, the reserve position
-            for (int j = array.GetLength(1) - 1; j > jPos; j--)
+            for (int j = jEndBarCode; j > jStartBarCode; j--)
             {
-                for (int i = 0; i < 200; i++)
+                for (int i = 0; i < 100; i++)
                 {
                     if (array[i, j] == 0)
                     {
@@ -397,6 +483,7 @@ namespace MRO_E_Ticket.Domain
                             oldI = i;
                             oldJ = j;
                             counterRepeatI = 0;
+                            break;
                         }
                         if (i == oldI)
                         {
@@ -410,7 +497,7 @@ namespace MRO_E_Ticket.Domain
                 }
             }
             // +1 to allow a black pixel
-            resultPosition[0] = oldI;
+            resultPosition[0] = oldI + 1;
             resultPosition[1] = oldJ + 1;
             return resultPosition;
         }
@@ -418,7 +505,7 @@ namespace MRO_E_Ticket.Domain
         private int GetCounVerticlaBlackPixel(int[,] array, int startFirstPixelX, int startPixelY)
         {
             int resultCounter = 0;
-            for (int j = startPixelY; j > startPixelY - 100; j--)
+            for (int j = startPixelY; j > startPixelY - 120; j--)
             {
                 if (array[startFirstPixelX, j] == 0)
                 {

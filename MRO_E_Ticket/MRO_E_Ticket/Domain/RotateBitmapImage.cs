@@ -51,8 +51,8 @@ namespace MRO_E_Ticket.Domain
                 // Clear with the color in the image's upper left corner.
                 gr.Clear(bm.GetPixel(0, 0));
 
-                //// For debugging. (It's easier to see the background.)
-                // gr.Clear(Color.White);
+                
+                gr.Clear(Color.White);
 
                 // Set up the transformation to rotate.
                 gr.Transform = rotate_at_center;

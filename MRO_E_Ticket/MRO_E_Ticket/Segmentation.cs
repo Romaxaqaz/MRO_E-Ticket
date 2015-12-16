@@ -263,6 +263,10 @@ namespace MRO_E_Ticket
             {
                 int widthMiniArray = miniArray.GetLength(0);
                 int heigthMiniArray = miniArray.GetLength(1);
+                if(heigthMiniArray > 80)
+                {
+                    heigthMiniArray = 78;
+                }
                 //count cycle start
                 int startLeftCycle = widthMaxyArray / 2 - widthMiniArray / 2;
                 int startUpCycle = heigthMaxyiArray / 2 - heigthMiniArray / 2;
@@ -283,26 +287,26 @@ namespace MRO_E_Ticket
             return maxArray;
         }
 
-        public int[,] RemoveBorder(int[,] array)
+        public int[,] RemoveBorder(int[,] array, int border = 4)
         {
             int[,] newArray = null;
             for (int i = 0; i < array.GetLength(0); i++)
             {
                 for (int j = 0; j < array.GetLength(1); j++)
                 {
-                    if (j <= 4)
+                    if (j <= border)
                     {
                         array[i, j] = 255;
                     }
-                    if (j >= array.GetLength(1) - 4)
+                    if (j >= array.GetLength(1) - border)
                     {
                         array[i, j] = 255;
                     }
-                    if (i <= 1)
+                    if (i <= border/2)
                     {
                         array[i, j] = 255;
                     }
-                    if (i >= array.GetLength(0) - 1)
+                    if (i >= array.GetLength(0) - border)
                     {
                         array[i, j] = 255;
                     }

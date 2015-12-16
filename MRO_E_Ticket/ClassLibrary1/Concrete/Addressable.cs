@@ -35,22 +35,16 @@ namespace PerceptronLib.Concrete
             int i = 0;
             for (i = 0; i < ajLength; i++)
             {
-                SumAElement(i);
+                int resultSum = 0;
+                foreach (var item in listSensor)
+                {
+                    resultSum = resultSum + (item.Value * ArrayAjElemenst[item.ID, i]);
+                }
+                sum = resultSum;
+                output = (sum >= Threshold) ? 1 : 0;
+                addressableList.Add(new Addressable(sum, output));
             }
         }
-
-        private void SumAElement(int i)
-        {
-            int resultSum = 0;
-            foreach (var item in listSensor)
-            {
-                resultSum = resultSum + (item.Value * ArrayAjElemenst[item.ID, i]);
-            }
-            sum = resultSum;
-            output = (sum >= Threshold) ? 1 : 0;
-            addressableList.Add(new Addressable(sum, output));
-        }
-
         private Addressable(int sum, int output)
         {
             this.sum = sum;

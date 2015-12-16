@@ -196,6 +196,7 @@ namespace MRO_E_Ticket
                     DividedIntoImageButton.Enabled = true;
                     binary = null;
                     grayBitmap = null;
+                    numberImageCollection.Clear();
                     #endregion
                     break;
             }
@@ -455,9 +456,9 @@ namespace MRO_E_Ticket
 
         private void button4_Click(object sender, EventArgs e)
         {
-                lamArrayForm.SetText(per.dictionaryLambdaElement, "Open learning");
-                lamArrayForm.ShowArray();
-                lamArrayForm.Show();  
+            lamArrayForm.SetText(per.dictionaryLambdaElement, "Open learning");
+            lamArrayForm.ShowArray();
+            lamArrayForm.Show();
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -480,14 +481,15 @@ namespace MRO_E_Ticket
             if (numberImageCollection != null)
             {
                 ResultLable.Text = "";
+                ResultPerceptronFromAAnswer.Text = "";
                 foreach (var item in numberImageCollection)
                 {
                     ResultPerceptronFromAAnswer.Text = ResultPerceptronFromAAnswer.Text + NumbersOfString(per.InputsImageForPerseptronFromAnswer(item.bitmap));
-                    per.LearningPerseptronFromAnswer("", per.InputsImageForPerseptronFromAnswer(item.bitmap), item.bitmap);
+                    //per.LearningPerseptronFromAnswer("", per.InputsImageForPerseptronFromAnswer(item.bitmap), item.bitmap);
                 }
-                per.EndLearning();
-                SavePerceptron();
-                lamArrayForm.SetText(per.dictionaryLambdaElement, "Compleate");
+                // per.EndLearning();
+                //SavePerceptron();
+                lamArrayForm.SetText(per.dictionaryLambdaElement, "Lambda array perceptron without answer");
                 lamArrayForm.ShowArray();
                 lamArrayForm.Refresh();
             }
@@ -499,7 +501,7 @@ namespace MRO_E_Ticket
 
         private void LambdaArrayFromAnswer_Click(object sender, EventArgs e)
         {
-            lamArrayForm.SetText(per.dictionaryLambdaElementAnswer, "Open learning");
+            lamArrayForm.SetText(per.dictionaryLambdaElementAnswer, "Lambda array perceptron from answer");
             lamArrayForm.ShowArray();
             lamArrayForm.Show();
         }

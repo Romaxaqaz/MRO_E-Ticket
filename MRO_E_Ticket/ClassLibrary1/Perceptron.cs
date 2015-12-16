@@ -375,8 +375,6 @@ namespace PerceptronLib
             return classname;
         }
 
-
-
         private int[] FillArray(int[] array)
         {
             for (int i = 0; i < array.GetLength(0); i++)

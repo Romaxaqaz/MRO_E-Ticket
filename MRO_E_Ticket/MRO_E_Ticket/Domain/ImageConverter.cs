@@ -149,6 +149,7 @@ namespace MRO_E_Ticket.Domain
         #region Create Bitmap
         public Bitmap CreateBitmap(int[,] arrayImage)
         {
+            
             int widthImage = arrayImage.GetLength(0);
             int heigthImage = arrayImage.GetLength(1);
             Bitmap halfBitmap = new Bitmap(widthImage, heigthImage);
@@ -252,9 +253,17 @@ namespace MRO_E_Ticket.Domain
             }
             var CountPixelinEachRowList = transformation.Parameters(newImageArray);
             var paramsSegmentList = segment.ReturnParamsList(CountPixelinEachRowList);
-
-            //search barcode
-            var maxWidth = paramsSegmentList.Max(x => x.WidthPixels);
+            int maxWidth = 0;
+            try
+            {
+                //search barcode
+                maxWidth = paramsSegmentList.Max(x => x.WidthPixels);
+            }
+            catch(System.InvalidOperationException)
+            {
+                MessageBox.Show("Что-то не так. Попробуйте уменьшить порог бинаризации.");
+                return 0;
+            }
 
             //set start and end position barcode
             foreach (var item in paramsSegmentList)
